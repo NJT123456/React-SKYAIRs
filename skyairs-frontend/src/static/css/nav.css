@@ -1,0 +1,248 @@
+@import url("https://fonts.googleapis.com/css?family=Prompt");
+@import url("//db.onlinewebfonts.com/c/bb25f84423b9515a1d475d02d2de6462?family=Bell+MT");
+
+nav {
+  background-color: #fff;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+}
+
+.sticky{
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.nav-header {
+  top: 0;
+  left: 0;
+  z-index: 30;
+  height: 90px;
+}
+
+.nav {
+  position: relative;
+  display: flex;
+  align-items: center;
+  padding: 1rem;
+  width: 100%;
+}
+
+.font {
+  font-size: 50px;
+  font-family: "Bell MT Semi Bold";
+  font-style: italic;
+  color: #002060;
+}
+
+.link {
+  display: flex;
+  align-items: center;
+  margin-left: auto;
+}
+
+ul {
+  list-style-type: none;
+}
+
+li {
+  margin-left: 20px;
+}
+
+.btn {
+  background-color: #002060;
+  color: white;
+  border: none;
+  padding: 10px 20px;
+  cursor: pointer;
+  margin: 8px 0;
+  border-radius: 8px;
+}
+
+.font1 {
+  font-size: 20px;
+}
+
+.btn:hover {
+  opacity: 0.8;
+}
+
+.active-nav {
+  -webkit-animation: animatezoom 0.6s;
+  animation: animatezoom 0.6s;
+}
+
+@-webkit-keyframes animatezoom {
+  from {
+    -webkit-transform: scale(0);
+  }
+  to {
+    -webkit-transform: scale(1);
+  }
+}
+
+@keyframes animatezoom {
+  from {
+    transform: scale(0);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+
+.modal {
+  position: fixed;
+  inset: 0px;
+  z-index: 9999;
+  background-color: rgb(0, 0, 0, 0.7);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-content {
+  z-index: 10000;
+  width: 500px;
+  background-color: #d6dce5;
+  border: 1px solid #888;
+  border-radius: 10px;
+}
+
+.head-container {
+  width: 100%;
+}
+
+.close {
+  margin-top: -20px;
+  float: right;
+  padding-right: 10px;
+  color: #002060;
+  font-size: 50px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: red;
+}
+
+.login {
+  margin-top: 19px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0 0 10px 10px;
+}
+
+.container {
+  width: 100%;
+}
+
+.input-field {
+  padding: 10px;
+}
+
+.input-nav {
+  outline: none;
+  width: 100%;
+  margin-bottom: 0;
+  padding: 21px 10px 7px;
+  font-size: 18px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  transition: all 0.5s ease;
+}
+
+.input-nav::placeholder {
+  color: rgba(0, 0, 0, 0);
+}
+
+.label-nav {
+  display: block;
+  position: relative;
+  max-height: 0;
+  pointer-events: none;
+  width: 100%;
+}
+
+.label-nav::before {
+  color: #888;
+  content: attr(data-content);
+  display: inline-block;
+  transform-origin: left top;
+  transition: transform 0.2s ease;
+  left: 0.8rem;
+  position: relative;
+}
+
+.label-nav::after {
+  bottom: 0;
+  content: "";
+  height: 0.1rem;
+  position: absolute;
+  transition: transform 180ms cubic-bezier(0.4, 0, 0.2, 1),
+    opacity 180ms cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+  opacity: 0;
+  left: 0;
+  top: 100%;
+  margin-top: -1rem;
+  transform: scale3d(0.82, 0.82, 1);
+  width: 100%;
+}
+
+.input-nav:focus + .label-nav::after {
+  transform: scale3d(1, 1, 1);
+  opacity: 1;
+}
+
+.input-nav:placeholder-shown + .label-nav::before {
+  transform: translate3d(0, -2.3rem, 0) scale3d(1, 1, 1);
+}
+
+.label-nav::before,
+.input-nav:focus + .label-nav::before {
+  transform: translate3d(0, -3rem, 0) scale3d(0.82, 0.82, 1);
+}
+
+.hidden--visually {
+  border: 0;
+  clip: rect(1px 1px 1px 1px);
+  clip: rect(1px, 1px, 1px, 1px);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+}
+
+.btn-container {
+  padding: 20px;
+}
+
+a:link {
+  text-decoration: none;
+  color: #385285;
+}
+
+a:hover {
+  color: red;
+}
+
+a:visited {
+  color: #385285;
+}
+
+.btn-login {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+span.signin,
+span.register {
+  float: right;
+  padding-bottom: 20px;
+  cursor: pointer;
+}

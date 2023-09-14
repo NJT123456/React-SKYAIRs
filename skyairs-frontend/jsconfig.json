@@ -1,0 +1,25 @@
+{
+    "compilerOptions": {
+        "baseUrl": ".",
+        "checkJs": false,
+        "paths": {
+            "@component/*": [
+                "component/*"
+            ],
+            "@data/*": [
+                "data/*"
+            ],
+            "@static/*": [
+                "static/*"
+            ]
+        },
+        "jsx": "react"
+    },
+    "include": [
+        "**/*.js"
+    ],
+    "exclude": [
+        "node_modules",
+        "**/node_modules"
+    ]
+}
