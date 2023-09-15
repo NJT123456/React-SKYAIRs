@@ -45,6 +45,7 @@ const Navbar = ({classNameSticky}) => {
   }
 
   const handleLogout = () => {
+    localStorage.removeItem('accessToken')
     setSuccess(false)
   }
 
@@ -52,23 +53,23 @@ const Navbar = ({classNameSticky}) => {
     e.preventDefault()
 
     if (showRegister) {
-      Axios.post("http://localhost:3001/register", {
+      Axios.post("http://localhost:3001/auth", {
         username: userName,
         password: password,
-        confirmPw: confirmPw,
+        password1: confirmPw,
       })
         .then((res) => {
           console.log("Response from server:", res.data)
-          if (res.data === "User registered successfully") {
+          if (res.data === "SUCCESS") {
             setShowForm(false)
-          } else if (res.data === "This username has already been taken") {
-            setErrorUserName(res.data)
+          } else if (res.data.error === "Username already exists") {
+            setErrorUserName(res.data.error)
             setUserNameColor("red")
             setConfirmPw("")
             setUserName("")
             setPassword("")
-          } else if (res.data === "Passwords do not match") {
-            setErrorConfirmPw(res.data)
+          } else if (res.data.error === "Passwords do not match") {
+            setErrorConfirmPw(res.data.error)
             setConfirmPwColor("red")
             setConfirmPw("")
             setUserName("")
@@ -81,23 +82,25 @@ const Navbar = ({classNameSticky}) => {
           console.error(err)
         })
     }
+    
 
     if (showLogin) {
-      Axios.post("http://localhost:3001/login", {
+      Axios.post("http://localhost:3001/auth/login", {
         username: userName,
         password: password,
       })
         .then((res) => {
-          if (res.data === "Login successful") {
-            setSuccess(true)
+          if (res.data) {
+            localStorage.setItem('accessToken', res.data)
+            setSuccess({username: res.data.username, id:res.data.id, status: true})
             setShowForm(false)
-          } else if (res.data === "Invalid username") {
-            setErrorUserName(res.data)
+          } else if (res.data.error === "User Doesn't Exist") {
+            setErrorUserName(res.data.error)
             setUserNameColor("red")
             setUserName("")
             setPassword("")
-          } else if (res.data === "Incorrect password") {
-            setErrorPassword(res.data)
+          } else if (res.data.error === "Wrong Username And Password Combination") {
+            setErrorPassword(res.data.error)
             setPasswordColor("red")
             setUserName("")
             setPassword("")
@@ -108,6 +111,7 @@ const Navbar = ({classNameSticky}) => {
         })
     }
   }
+  console.log(success)
 
   return (
     <nav className={`nav-header ${classNameSticky}`}>
@@ -128,7 +132,7 @@ const Navbar = ({classNameSticky}) => {
                   คำสั่งซื้อ
                 </Link>
               </li>
-              <li>{userName}</li>
+              <li>{success.username}</li>
             </>
           )}
           <li>

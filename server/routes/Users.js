@@ -2,6 +2,8 @@ const express = require("express");
 const router = express.Router();
 const { Users } = require("../models");
 const bcrypt = require("bcrypt");
+const { sign } = require("jsonwebtoken");
+const { validateToken } = require("../middlewares/AuthMiddlewares");
 
 router.post("/", async (req, res) => {
   const { username, password, password1 } = req.body;
@@ -25,6 +27,31 @@ router.post("/", async (req, res) => {
       password: hash,
     });
     res.json("SUCCESS");
+  });
+});
+
+router.post("/login", async (req, res) => {
+  const { username, password } = req.body;
+
+  const user = await Users.findOne({ where: { username: username } });
+
+  if (!user) {
+    res.json({ error: "User Doesn't Exist" });
+    return;
+  }
+
+  bcrypt.compare(password, user.password).then((match) => {
+    if (!match) {
+      res.json({ error: "Wrong Username And Password Combination" });
+      return; // ออกจากการทำงานทันทีหลังจากส่งข้อความข้อผิดพลาด
+    }
+
+    const accessToken = sign(
+      { username: user.username, id: user.id },
+      "importantsecret"
+    );
+
+    res.json({ token: accessToken, username: username, id: user.id });
   });
 });
 
