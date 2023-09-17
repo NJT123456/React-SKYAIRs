@@ -1,27 +1,67 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@200;300;400&display=swap');
+@import url("//db.onlinewebfonts.com/c/bb25f84423b9515a1d475d02d2de6462?family=Bell+MT");
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
+@layer base {
+  body, a, button {
+    @apply font-Prompt;
+    background-color: rgb(247, 247, 247, 1);
+    @apply text-primary;
+    @apply text-sm;
+    letter-spacing: 0.01em;
+    @apply p-0;
+    @apply m-0;
   }
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+@layer components{
+  .link a{
+    @apply block;
+    @apply w-full;
+    @apply h-full;
+    @apply transition-all;
+    @apply p-4;
+    @apply bg-white;
+    @apply text-base;
+    @apply md:p-1;
+  }
+
+  .link button{
+    @apply w-full;
+    @apply h-full;
+    @apply rounded-md;
+    @apply p-4;
+    @apply bg-white;
+    @apply text-base;
+    @apply md:p-1;
+    @apply hover:opacity-80;
+  }
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+.navbar__toggle .bar {
+  width: 25px;
+  height: 3px;
+  margin: 5px auto;
+  transition: all 0.5s ease-in-out;
+  @apply bg-primary;
+  display: flex;
+  cursor: pointer;
+}
+
+.navbar__toggle.is-active .bar:nth-child(2) {
+  opacity: 0;
+}
+
+.navbar__toggle.is-active .bar:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.navbar__toggle.is-active .bar:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
 }
