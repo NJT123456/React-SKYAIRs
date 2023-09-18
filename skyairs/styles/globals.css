@@ -1,11 +1,13 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@import url('https://fonts.googleapis.com/css2?family=Prompt:wght@200;300;400&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Prompt:wght@200;300;400&display=swap");
 @import url("//db.onlinewebfonts.com/c/bb25f84423b9515a1d475d02d2de6462?family=Bell+MT");
 
 @layer base {
-  body, a, button {
+  body,
+  a,
+  button {
     @apply font-Prompt;
     background-color: rgb(247, 247, 247, 1);
     @apply text-primary;
@@ -16,8 +18,8 @@
   }
 }
 
-@layer components{
-  .link a{
+@layer components {
+  .link a {
     @apply block;
     @apply w-full;
     @apply h-full;
@@ -28,7 +30,7 @@
     @apply md:p-1;
   }
 
-  .link button{
+  .link button {
     @apply w-full;
     @apply h-full;
     @apply rounded-md;
@@ -38,30 +40,85 @@
     @apply md:p-1;
     @apply hover:opacity-80;
   }
+
+  .btn {
+    background-color: #002060;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    cursor: pointer;
+    margin: 8px 0;
+    border-radius: 8px;
+  }
+
+  .navbar__toggle .bar {
+    width: 25px;
+    height: 3px;
+    margin: 5px auto;
+    transition: all 0.5s ease-in-out;
+    @apply bg-primary;
+    display: flex;
+    cursor: pointer;
+  }
+  
+  .navbar__toggle.is-active .bar:nth-child(2) {
+    opacity: 0;
+  }
+  
+  .navbar__toggle.is-active .bar:nth-child(1) {
+    transform: translateY(8px) rotate(45deg);
+  }
+  
+  .navbar__toggle.is-active .bar:nth-child(3) {
+    transform: translateY(-8px) rotate(-45deg);
+  }
+  
+  /* ? login */
+  .active-nav {
+    -webkit-animation: animatezoom 0.6s;
+    animation: animatezoom 0.6s;
+  }
+  
+  @-webkit-keyframes animatezoom {
+    from {
+      -webkit-transform: scale(0);
+    }
+    to {
+      -webkit-transform: scale(1);
+    }
+  }
+  
+  @keyframes animatezoom {
+    from {
+      transform: scale(0);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  
+  /* input */
+  .field{
+    @apply relative p-3;
+  }
+  .field .input-nav {
+    @apply w-full px-[10px] pt-4 pb-2 outline-none border border-solid border-[#ccc] placeholder:transition-colors rounded-md;
+  }
+  
+  .field .input-nav::placeholder{
+    transition: color 300ms ease;
+  }
+
+  .field .label-nav {
+    @apply absolute top-[31px] left-[24px] text-[#888] text-[120%] origin-[0_-190%] transition-transform pointer-events-none;
+  }
+
+  .field .input-nav:focus ~ .label-nav{
+    transform: scale(0.6);
+  }
 }
 
 * {
   scroll-behavior: smooth;
 }
 
-.navbar__toggle .bar {
-  width: 25px;
-  height: 3px;
-  margin: 5px auto;
-  transition: all 0.5s ease-in-out;
-  @apply bg-primary;
-  display: flex;
-  cursor: pointer;
-}
-
-.navbar__toggle.is-active .bar:nth-child(2) {
-  opacity: 0;
-}
-
-.navbar__toggle.is-active .bar:nth-child(1) {
-  transform: translateY(8px) rotate(45deg);
-}
-
-.navbar__toggle.is-active .bar:nth-child(3) {
-  transform: translateY(-8px) rotate(-45deg);
-}
