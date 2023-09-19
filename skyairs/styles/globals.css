@@ -60,25 +60,25 @@
     display: flex;
     cursor: pointer;
   }
-  
+
   .navbar__toggle.is-active .bar:nth-child(2) {
     opacity: 0;
   }
-  
+
   .navbar__toggle.is-active .bar:nth-child(1) {
     transform: translateY(8px) rotate(45deg);
   }
-  
+
   .navbar__toggle.is-active .bar:nth-child(3) {
     transform: translateY(-8px) rotate(-45deg);
   }
-  
+
   /* ? login */
   .active-nav {
     -webkit-animation: animatezoom 0.6s;
     animation: animatezoom 0.6s;
   }
-  
+
   @-webkit-keyframes animatezoom {
     from {
       -webkit-transform: scale(0);
@@ -87,7 +87,7 @@
       -webkit-transform: scale(1);
     }
   }
-  
+
   @keyframes animatezoom {
     from {
       transform: scale(0);
@@ -96,16 +96,16 @@
       transform: scale(1);
     }
   }
-  
+
   /* input */
-  .field{
+  .field {
     @apply relative p-3;
   }
   .field .input-nav {
     @apply w-full px-[10px] pt-4 pb-2 outline-none border border-solid border-[#ccc] placeholder:transition-colors rounded-md;
   }
-  
-  .field .input-nav::placeholder{
+
+  .field .input-nav::placeholder {
     transition: color 300ms ease;
   }
 
@@ -113,12 +113,41 @@
     @apply absolute top-[31px] left-[24px] text-[#888] text-[120%] origin-[0_-190%] transition-transform pointer-events-none;
   }
 
-  .field .input-nav:focus ~ .label-nav{
+  .field .input-nav:focus ~ .label-nav {
     transform: scale(0.6);
+  }
+
+  .switch-button {
+    @apply flex items-center justify-center py-0 px-4 rounded-full 
+    font-bold text-white text-lg bg-secondary cursor-pointer border-none 
+    appearance-none outline-none w-[45px] h-[45px] 
+    absolute hover:bg-tertiary desktop:w-8 desktop:h-8 desktop:!top-[50%] 
+    desktop:left-[50%];
+    top: calc(77px - 0.5px);
+    right: -12px;
+    transform: translate(-50%, -50%) rotate(0) skew(0, 0) scale(1, 1);
+    transition: all 0.15s linear 75ms;
+  }
+
+  .switch-button:focus {
+    box-shadow: 0 0 0 2px #ffffff, 0 0 3px 5px #3a97f9;
+    outline: 2px dotted transparent;
+    outline-offset: 2px;
+  }
+
+  .icon{
+    @apply flex items-center justify-center font-bold text-[22px];
+    transform: translate(0, 0) rotate(90deg) skew(0, 0) scale(1, 1);
+  }
+
+  @media screen and (min-width: 1360px) {
+    .icon{
+      transform: translate(0, 0) rotate(180deg) skew(0, 0) scale(1, 1);
+    }
+    
   }
 }
 
 * {
   scroll-behavior: smooth;
 }
-

@@ -3,7 +3,7 @@ import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import CloseIcon from "@mui/icons-material/Close";
 
-export default function Navbar({ alternate, className, showNavigationLinks }) {
+export default function Navbar({ className, showNavigationLinks }) {
   const link = [
     { text: "หน้าแรก", path: "/", id: "homepage" },
     { text: "เที่ยวบิน", path: "/flight", id: "flight" },
@@ -53,7 +53,7 @@ export default function Navbar({ alternate, className, showNavigationLinks }) {
   };
 
   return (
-    <nav className={`bg-white h-[67px] ${className}`}>
+    <nav className={`bg-white h-[67px] shadow-md ${className}`}>
       <div
         className={`md:flex relative md:h-full md:p-4 md:item-center md:justify-between ${
           !showNavigationLinks ? "justify-between" : ""
