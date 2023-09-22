@@ -21,6 +21,7 @@ module.exports = {
         primary: "#002060",
         secondary: "#3498db",
         tertiary: "#247bb6",
+        gray: "#9a9a9a",
       },
       screens: {
         desktop: "1360px",

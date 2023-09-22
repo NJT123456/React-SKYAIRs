@@ -7,7 +7,7 @@ export default function Navbar({ className, showNavigationLinks }) {
   const link = [
     { text: "หน้าแรก", path: "/", id: "homepage" },
     { text: "เที่ยวบิน", path: "/flight", id: "flight" },
-    { text: "คำสั่งซื้อ", path: "/flight/confirm", id: "order" },
+    { text: "คำสั่งซื้อ", path: "/flight/order", id: "order" },
   ];
   const [showLinks, setShowLinks] = useState(false);
   const [showFrom, setShowFrom] = useState(false);
