@@ -44,7 +44,7 @@ export default function Order() {
                 </div>
               </div>
 
-              <div className="flex flex-col justify-center items-center gap-y-2">
+              <div className="flex desktop:flex-col justify-center items-center gap-y-2">
                 <button className="select-price !w-[132px]">
                   <span>e-Ticket</span>
                 </button>

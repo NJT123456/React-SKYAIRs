@@ -113,12 +113,12 @@ export default function FlightSearch() {
           <div className="flex flex-col gap-y-[10px]">
             {/* //todo: map for all data */}
             <div className="card-container">
-              <div className="airline-data">
+              <div className="airline-data desktop:pb-0 pb-4">
                 <p>data.origin_airport_thai</p>
               </div>
 
               <div className="da">
-                <div className="time-data">
+                <div className="time-data desktop:pb-0 pb-4">
                   <div>
                     <p className="front-data">data.depart_time</p>
                     <p className="code-data">data.origin_code</p>
@@ -136,13 +136,13 @@ export default function FlightSearch() {
                   </div>
                 </div>
 
-                <div className="time-diff">
+                <div className="time-diff desktop:pb-0 pb-4">
                   <div className="front">timeDifference</div>
                 </div>
 
                 <div className="price-select">
-                  <div className="price">
-                    <div className="price-flex">
+                  <div className="price pb-4 desktop:pb-0;">
+                    <div className="price-flex ">
                       <div className="relative-price">
                         <div className="price">
                           <span className="font-price">
