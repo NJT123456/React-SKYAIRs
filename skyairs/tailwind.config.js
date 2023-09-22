@@ -20,12 +20,12 @@ module.exports = {
       colors: {
         primary: "#002060",
         secondary: "#3498db",
-        tertiary:"#247bb6"
+        tertiary: "#247bb6",
       },
       screens: {
         desktop: "1360px",
       },
     },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar-hide")],
 };

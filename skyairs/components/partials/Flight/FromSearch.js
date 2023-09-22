@@ -15,11 +15,11 @@ export default function FromSearch({
     <>
       <div
         id={`${id}`}
-        className={`py-[10px] px-[15px] desktop:w-[314px] w-full cursor-pointer border border-solid rounded-md m-0 ${
+        className={`py-[10px] px-[15px] desktop:w-[280px] w-full cursor-pointer border border-solid rounded-md m-0 ${
           showSearchList ? "border-red-600" : "border-[#d8d8d8]"
         }`}
         onClick={toggleShowList}>
-        <label className="text-[#9a9a9a] text-xs block mb-[10px]">
+        <label className="text-[#9a9a9a] text-xs block cursor-pointer mb-[10px]">
           {label}
         </label>
         <input
