@@ -1,8 +1,14 @@
 import Navbar from "@/components/partials/Navbar";
-import React from "react";
+import Link from "next/link";
+import React, { useState } from "react";
 import { FaArrowRightLong, FaChevronRight } from "react-icons/fa6";
 
 export default function Confirm() {
+  const [confirm, setConfirm] = useState(true);
+
+  const toggleConfirm = () => {
+    setConfirm(!confirm);
+  };
   return (
     <>
       <Navbar className={"sticky top-0 z-30"} />
@@ -105,7 +111,10 @@ export default function Confirm() {
                 </div>
               </div>
             </div>
-            <button className="hs-button text-sm w-full mt-8" id="changeFlight">
+            <button
+              className="hs-button text-sm w-full mt-8"
+              id="changeFlight"
+              onClick={toggleConfirm}>
               ยืนยันการจอง
             </button>
           </div>
@@ -154,6 +163,40 @@ export default function Confirm() {
           </div>
         </section>
       </main>
+
+      {confirm && (
+        <div className="fixed inset-0 z-[9999] bg-black bg-opacity-40 flex justify-center items-center">
+          <div className="z-[10000] bg-[#d6dce5] border border-solid border-[#888] rounded-xl active-nav p-4">
+            <div className="w-full flex flex-col gap-y-9 justify-center items-center p-4">
+              <svg
+                viewBox="0 0 26 26"
+                xmlns="http://www.w3.org/2000/svg"
+                className="block h-[18vw]">
+                <g
+                  stroke="currentColor"
+                  strokeWidth="2"
+                  fill="none"
+                  fillRule="evenodd"
+                  strokeLinecap="round"
+                  strokeLinejoin="round">
+                  <path
+                    className="circle-confirm"
+                    d="M13 1C6.372583 1 1 6.372583 1 13s5.372583 12 12 12 12-5.372583 12-12S19.627417 1 13 1z"
+                  />
+                  <path
+                    className="tick-confirm"
+                    d="M6.5 13.5L10 17 l8.808621-8.308621"
+                  />
+                </g>
+              </svg>
+              <div className="font-bold text-xl text-center">
+                Congratulations, Your Flight are booking confirmed.
+              </div>
+              <Link href='order' className="bg-primary text-white flex justify-center items-center font-bold p-4 rounded-md hover:opacity-80" id="link-to-order">กลับไปหน้าคำสั่งทั้งหมด</Link>
+            </div>
+          </div>
+        </div>
+      )}
     </>
   );
 }

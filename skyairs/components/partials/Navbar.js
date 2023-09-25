@@ -150,7 +150,6 @@ export default function Navbar({ className, showNavigationLinks }) {
                               placeholder=""
                               className="input-nav"
                             />
-                            <hr className="hr" />
                             <label className="label-nav">Enter Username</label>
                             <ErrorMessage name="username" component="span" />
                           </div>
