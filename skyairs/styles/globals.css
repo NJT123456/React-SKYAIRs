@@ -109,11 +109,19 @@
     transition: color 300ms ease;
   }
 
+  .field .input-nav:not(:focus)::placeholder {
+    color: transparent;
+  }
   .field .label-nav {
     @apply absolute top-[31px] left-[24px] text-[#888] text-[120%] origin-[0_-190%] transition-transform pointer-events-none;
   }
 
-  .field .input-nav:focus ~ .label-nav {
+  .field .input-nav:focus ~ .label-nav,
+  .field .input-nav:valid ~ .label-nav {
+    transform: scale(0.6);
+  }
+
+  .transform{
     transform: scale(0.6);
   }
 
@@ -344,13 +352,13 @@
 }
 
 .pulse-bubble-1 {
-    animation: pulse .4s ease 0s infinite alternate;
+  animation: pulse 0.4s ease 0s infinite alternate;
 }
 .pulse-bubble-2 {
-    animation: pulse .4s ease .2s infinite alternate;
+  animation: pulse 0.4s ease 0.2s infinite alternate;
 }
 .pulse-bubble-3 {
-    animation: pulse .4s ease .4s infinite alternate;
+  animation: pulse 0.4s ease 0.4s infinite alternate;
 }
 
 @keyframes pulse {
@@ -359,8 +367,8 @@
     transform: scale(1);
   }
   to {
-    opacity: .25;
-    transform: scale(.75);
+    opacity: 0.25;
+    transform: scale(0.75);
   }
 }
 
@@ -368,14 +376,14 @@
   stroke-dasharray: 76;
   stroke-dashoffset: 76;
   -webkit-animation: draw 1s forwards;
-          animation: draw 1s forwards;
+  animation: draw 1s forwards;
 }
 
 .tick-confirm {
   stroke-dasharray: 18;
   stroke-dashoffset: 18;
   -webkit-animation: draw 1s forwards 1s;
-          animation: draw 1s forwards 1s;
+  animation: draw 1s forwards 1s;
 }
 
 @-webkit-keyframes draw {

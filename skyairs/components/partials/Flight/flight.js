@@ -5,7 +5,7 @@ import FromSearch from "./FromSearch";
 import { BsRepeat } from "react-icons/bs";
 import FromDate from "./FromDate";
 import dayjs from "dayjs";
-import FromSeat from "./FromSeat";
+import FromSelect from "./FromSelect";
 
 export default function Flight() {
   const [flightTrip, setFlightTrip] = useState("oneway");
@@ -15,6 +15,8 @@ export default function Flight() {
   const [showFromDate, setShowFromDate] = useState(false);
   const [showGoDate, setShowGoDate] = useState(false);
   const [showSeat, setShowSeat] = useState(false);
+  const [seatClass, setSeatClass] = useState("");
+  const seat = ["Economy", "First"];
 
   // ! Example for Date
   const [depDate, setDepDate] = useState(
@@ -24,9 +26,6 @@ export default function Flight() {
   const [retDate, setRetDate] = useState(
     dayjs().add(1, "day").format("YYYY-MM-DD")
   );
-
-  const [seatClass, setSeatClass] = useState("");
-
   // !-----------------
 
   const handleChangeFlightType = (e, newFlightTrip) => {
@@ -151,11 +150,16 @@ export default function Flight() {
             />
 
             {/* seatclass */}
-            <FromSeat
-              showSeat={showSeat}
-              toggleShowSeat={toggleShowSeat}
-              seatClass={seatClass}
+            <FromSelect
+              show={showSeat}
+              toggleShow={toggleShowSeat}
+              select={seatClass}
               changeValue={setSeatClass}
+              id={"seat-flight"}
+              label={"ชั้นโดยสาร"}
+              placeholder={"ประเภทชั้นโดยสาร"}
+              textHeader={"เลือกประเภทชั้นโดยสาร"}
+              item={seat}
             />
           </div>
         </Box>

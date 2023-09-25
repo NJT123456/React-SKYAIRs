@@ -1,13 +1,22 @@
 import Navbar from "@/components/partials/Navbar";
+import { Field, Formik } from "formik";
 import Link from "next/link";
 import React, { useState } from "react";
 import { FaArrowRightLong, FaChevronRight } from "react-icons/fa6";
 
 export default function Confirm() {
-  const [confirm, setConfirm] = useState(true);
+  const [confirm, setConfirm] = useState(false);
+  const [showGender, setShowGender] = useState(true);
+  const [Gender, setGender] = useState("");
+
+  const gender = ["male", "female"];
 
   const toggleConfirm = () => {
     setConfirm(!confirm);
+  };
+
+  const toggleShowGender = () => {
+    setShowGender(!showGender);
   };
   return (
     <>
@@ -121,7 +130,9 @@ export default function Confirm() {
         </div>
       </main>
 
-      <main className="flex flex-col desktop:flex-row desktop:p-8 min-h-[50vh]">
+      <Formik
+        initialValues={{ fn: "", ln: "", gender: "", email: "", tel: "" }}
+        className="flex flex-col desktop:flex-row desktop:p-8 min-h-[50vh]">
         <section className="desktop:w-[75%] w-full">
           <div className="desktop:flex-1 flex-row desktop:mr-8">
             <div className="flex items-center justify-between p-8 bg-white border-b-[0.5px] border-gray">
@@ -131,28 +142,104 @@ export default function Confirm() {
             </div>
             {/* //todo: pull from database */}
             <div className="p-1 rounded bg-white">
-              <div className="flex">
+              <div className="flex flex-col">
                 <div className="flex-1 flex">
                   <div className="w-[50%] flex flex-col gap-y-2 text-sm">
                     <div className="field">
-                      <input
-                        type="text"
-                        id="email"
-                        name="email"
+                      <Field
+                        id="fn"
+                        name="fn"
                         placeholder=""
                         className="input-nav"
+                        required
                       />
-                      <label className="label-nav">Enter Email</label>
+                      <label className="label-nav">First Name</label>
                     </div>
                   </div>
                   <div className="w-[50%] flex flex-col gap-y-2 text-sm">
                     <div className="field">
-                      <input
+                      <Field
+                        id="ln"
+                        name="ln"
+                        placeholder=""
+                        className="input-nav"
+                        required
+                      />
+                      <label className="label-nav">Last Name</label>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-1 flex cursor-pointer">
+                  <div className="w-[50%] flex flex-col gap-y-2 text-sm cursor-pointer">
+                    <div className={`field`}>
+                      <Field
+                        id="gender"
+                        name="gender"
+                        placeholder=""
+                        autoComplete="off"
+                        className="input-nav cursor-pointer"
+                        onClick={toggleShowGender}
+                        value={Gender}
+                        readOnly
+                      />
+                      <label
+                        className={`label-nav ${
+                          Gender ? "transform scale-[0.6]" : ""
+                        }`}>
+                        Gender
+                      </label>
+                      {showGender && (
+                        <div className="absolute drop-shadow-md w-full desktop:mt-[5px] z-10">
+                          <div className="flex items-center justify-between rounded-t-md bg-[#f7f7f7] border-b-[0.5px] border-solid border-[#dedede] p-4">
+                            <div></div>
+                            <button
+                              className="border-none bg-transparent cursor-pointer text-[200%]"
+                              id="close-search"
+                              onClick={toggleShowGender}>
+                              &times;
+                            </button>
+                          </div>
+
+                          {gender.map((item, idx) => (
+                            <div
+                              className="bg-white rounded-b-md overflow-y-auto max-h-[410px] p-5 cursor-pointer hover:opacity-80"
+                              key={item}
+                              id={item}
+                              onClick={() => {
+                                setGender(item);
+                                toggleShowGender();
+                              }}>
+                              <div>{item}</div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                  <div className="w-[50%] flex flex-col gap-y-2 text-sm">
+                    <div className="field">
+                      <Field
                         type="text"
                         id="email"
                         name="email"
                         placeholder=""
                         className="input-nav"
+                        required
+                      />
+                      <label className="label-nav">Enter Email</label>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex-1 flex">
+                  <div className="w-[50%] flex flex-col gap-y-2 text-sm">
+                    <div className="field">
+                      <Field
+                        type="tel"
+                        id="tel"
+                        name="tel"
+                        placeholder=""
+                        className="input-nav"
+                        required
                       />
                       <label className="label-nav">Enter Contact Number</label>
                     </div>
@@ -162,7 +249,7 @@ export default function Confirm() {
             </div>
           </div>
         </section>
-      </main>
+      </Formik>
 
       {confirm && (
         <div className="fixed inset-0 z-[9999] bg-black bg-opacity-40 flex justify-center items-center">
@@ -192,7 +279,12 @@ export default function Confirm() {
               <div className="font-bold text-xl text-center">
                 Congratulations, Your Flight are booking confirmed.
               </div>
-              <Link href='order' className="bg-primary text-white flex justify-center items-center font-bold p-4 rounded-md hover:opacity-80" id="link-to-order">กลับไปหน้าคำสั่งทั้งหมด</Link>
+              <Link
+                href="order"
+                className="bg-primary text-white flex justify-center items-center font-bold p-4 rounded-md hover:opacity-80"
+                id="link-to-order">
+                กลับไปหน้าคำสั่งทั้งหมด
+              </Link>
             </div>
           </div>
         </div>

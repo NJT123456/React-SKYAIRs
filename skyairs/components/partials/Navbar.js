@@ -122,7 +122,8 @@ export default function Navbar({ className, showNavigationLinks }) {
           {showFrom && (
             <>
               <div className="fixed inset-0 z-[9999] bg-black bg-opacity-40 flex justify-center items-center">
-                <Formik>
+                <Formik
+                  initialValues={{ username: "", password: "", password1: "" }}>
                   <Form
                     className="z-[10000] w-[500px] bg-[#d6dce5] border border-solid border-[#888] rounded-xl active-nav p-4"
                     id="from-validation">
@@ -149,6 +150,7 @@ export default function Navbar({ className, showNavigationLinks }) {
                               name="username"
                               placeholder=""
                               className="input-nav"
+                              required
                             />
                             <label className="label-nav">Enter Username</label>
                             <ErrorMessage name="username" component="span" />
@@ -162,6 +164,7 @@ export default function Navbar({ className, showNavigationLinks }) {
                               name="password"
                               placeholder=""
                               className="input-nav"
+                              required
                             />
                             <label className="label-nav">Enter Password</label>
                             <ErrorMessage name="password" component="span" />
@@ -195,6 +198,7 @@ export default function Navbar({ className, showNavigationLinks }) {
                               name="username"
                               placeholder=""
                               className="input-nav"
+                              required
                             />
                             <label className="label-nav">Enter Username</label>
                             <ErrorMessage name="username" component="span" />
@@ -207,6 +211,7 @@ export default function Navbar({ className, showNavigationLinks }) {
                               name="password1"
                               placeholder=""
                               className="input-nav"
+                              required
                             />
                             <label className="label-nav">Enter Password</label>
                           </div>
@@ -218,6 +223,7 @@ export default function Navbar({ className, showNavigationLinks }) {
                               name="password2"
                               placeholder=""
                               className="input-nav"
+                              required
                             />
                             <label className="label-nav">
                               Confirm Password

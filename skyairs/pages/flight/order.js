@@ -12,7 +12,7 @@ export default function Order() {
         <div className="flex flex-col gap-y-[10px] ">
           <div className="card-container">
             <div className="da">
-              <div className="flex flex-col h-[120px desktop:pb-0 pb-4">
+              <div className="flex flex-col desktop:pb-0 pb-4">
                 <div className="time-data">
                   <p className="text-base font-bold">data.origin_city</p>
                   <div className="icon-go-return text-base font-bold">
@@ -25,7 +25,7 @@ export default function Order() {
                   </div>
                 </div>
 
-                <div className="flex flex-col pt-4">
+                <div className="flex flex-col pt-4 items-center justify-center desktop:items-start">
                   <p>REF NO : data</p>
                   <p>FLIGHT NUMBER : data</p>
                   <p>ชั้นโดยสาร : data</p>
