@@ -5,49 +5,34 @@ import { BsThreeDots } from "react-icons/bs";
 import Flight from "@/components/partials/Flight/flight";
 
 export default function FlightSearch() {
-  const [showNavbar, setShowNavbar] = useState("up");
+  const flightContainerRef = useRef(null)
+  const [showNavbar, setShowNavbar] = useState(true);
   const [changeFlight, setChangeFlight] = useState(false);
 
   useEffect(() => {
-    let lastScrollY = window.scrollY;
-
     const updateScrollDirection = () => {
-      const scrollY = window.scrollY;
-      const direction = scrollY > lastScrollY ? "down" : "up";
-      console.log(
-        "lastScrollY",
-        lastScrollY,
-        " scrollY",
-        scrollY,
-        "direction",
-        direction
-      );
+      const scrollY = flightContainerRef.current.scrollTop;
+      const direction = scrollY > 67 ? false : true;
+      console.log("scrollY:", scrollY);
+      console.log("direction:", direction);
       setShowNavbar(direction);
-      // if (
-      //   direction !== showNavbar &&
-      //   (scrollY - lastScrollY > 10 || scrollY - lastScrollY < -10)
-      // ) {
-      //   setShowNavbar(direction);
-      // }
-      // lastScrollY = scrollY > 0 ? scrollY : 0;
     };
 
-    window.addEventListener("scroll", updateScrollDirection);
+    flightContainerRef.current.addEventListener("scroll", updateScrollDirection);
     return () => {
-      window.removeEventListener("scroll", updateScrollDirection);
+      flightContainerRef.current.removeEventListener("scroll", updateScrollDirection);
     };
   }, []);
-  console.log(showNavbar);
 
   const toggleChangeFlight = () => {
     setChangeFlight(!changeFlight);
   };
 
   return (
-    <main className="flex flex-col items-center relative h-[100vh] scrollbar-hide">
+    <main ref={flightContainerRef} className="flex flex-col items-center relative h-[100vh] overflow-y-scroll scrollbar-hide">
       <section
         className={`sticky shadow-md bg-white w-full z-20 transition-all duration-300 ${
-          showNavbar === "down" ? "-top-[67px]" : "top-0"
+          showNavbar ? "top-0" : "-top-[67px]"
         }`}>
         <Navbar className={`relative top-0 z-30`} />
         <div
