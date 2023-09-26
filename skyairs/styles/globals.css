@@ -99,7 +99,7 @@
 
   /* input */
   .field {
-    @apply relative p-3;
+    @apply relative m-3;
   }
   .field .input-nav {
     @apply w-full px-[10px] pt-4 pb-2 outline-none border border-solid border-[#ccc] placeholder:transition-colors rounded-md;
@@ -113,7 +113,7 @@
     color: transparent;
   }
   .field .label-nav {
-    @apply absolute top-[31px] left-[24px] text-[#888] text-[120%] origin-[0_-190%] transition-transform pointer-events-none;
+    @apply absolute top-[22px] left-[12px] text-[#888] text-[120%] origin-[0_-190%] transition-transform pointer-events-none;
   }
 
   .field .input-nav:focus ~ .label-nav,

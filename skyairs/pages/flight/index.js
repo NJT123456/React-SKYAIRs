@@ -5,7 +5,7 @@ import { BsThreeDots } from "react-icons/bs";
 import Flight from "@/components/partials/Flight/flight";
 
 export default function FlightSearch() {
-  const flightContainerRef = useRef(null)
+  const flightContainerRef = useRef(null);
   const [showNavbar, setShowNavbar] = useState(true);
   const [changeFlight, setChangeFlight] = useState(false);
 
@@ -18,9 +18,15 @@ export default function FlightSearch() {
       setShowNavbar(direction);
     };
 
-    flightContainerRef.current.addEventListener("scroll", updateScrollDirection);
+    const container = flightContainerRef.current;
+    if (container) {
+      container.addEventListener("scroll", updateScrollDirection);
+    }
+
     return () => {
-      flightContainerRef.current.removeEventListener("scroll", updateScrollDirection);
+      if (container) {
+        container.removeEventListener("scroll", updateScrollDirection);
+      }
     };
   }, []);
 
@@ -29,7 +35,9 @@ export default function FlightSearch() {
   };
 
   return (
-    <main ref={flightContainerRef} className="flex flex-col items-center relative h-[100vh] overflow-y-scroll scrollbar-hide">
+    <main
+      ref={flightContainerRef}
+      className="flex flex-col items-center relative h-[100vh] overflow-y-scroll scrollbar-hide">
       <section
         className={`sticky shadow-md bg-white w-full z-20 transition-all duration-300 ${
           showNavbar ? "top-0" : "-top-[67px]"

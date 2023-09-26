@@ -1,9 +1,10 @@
-
 import Loading from "@/components/Loading";
+import { AuthContext } from "@/components/helpers/AuthContext";
 import "@/styles/globals.css";
+import axios from "axios";
 import { Prompt } from "next/font/google";
 import { useRouter } from "next/router";
-import { Suspense, useEffect, useRef, useState } from "react";
+import { Suspense, useEffect, useState } from "react";
 
 const prompt = Prompt({
   weight: ["300", "400"],
@@ -29,6 +30,41 @@ export default function App({ Component, pageProps }) {
       router.events.off("routeChangeError", handleComplete);
     };
   });
+
+  // todo: login logout
+  const [authState, setAuthState] = useState({
+    username: "",
+    id: 0,
+    status: false,
+  });
+
+  useEffect(() => {
+    axios
+      .get("http://localhost:3001/auth/auth", {
+        headers: {
+          accessToken: localStorage.getItem("accessToken"),
+        },
+      })
+      .then((res) => {
+        if (res.data.error) {
+          setAuthState({
+            ...authState,
+            status: false,
+          });
+        } else {
+          setAuthState({
+            username: res.data.username,
+            id: res.data.id,
+            status: true,
+          });
+        }
+      });
+  }, []);
+
+  const logout = () => {
+    localStorage.removeItem("accessToken");
+    setAuthState({ username: "", id: 0, status: false });
+  };
   return (
     <>
       <style jsx global>
@@ -42,7 +78,9 @@ export default function App({ Component, pageProps }) {
         <Loading />
       ) : (
         <Suspense fallback={<Loading />}>
-          <Component {...pageProps} />
+          <AuthContext.Provider value={{ authState, setAuthState, logout }}>
+            <Component {...pageProps} />
+          </AuthContext.Provider>
         </Suspense>
       )}
     </>
