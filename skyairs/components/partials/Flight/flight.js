@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { TabContext, TabPanel } from "@mui/lab";
 import { Box, Tab, Tabs } from "@mui/material";
 import FromSearch from "./FromSearch";
@@ -6,17 +6,35 @@ import { BsRepeat } from "react-icons/bs";
 import FromDate from "./FromDate";
 import dayjs from "dayjs";
 import FromSelect from "./FromSelect";
+import CityData from "@/data/city";
+import { AuthContext } from "@/components/helpers/AuthContext";
 
 export default function Flight() {
   const [flightTrip, setFlightTrip] = useState("oneway");
+  const [filterFrom, setFilterFrom] = useState([]);
+  const [filterGo, setFilterGo] = useState([]);
+
   const [showSearchFromList, setShowSearchFromList] = useState(false);
   const [showSearchGoList, setShowSearchGoList] = useState(false);
-  const [Switch, setSwitch] = useState(false);
   const [showFromDate, setShowFromDate] = useState(false);
   const [showGoDate, setShowGoDate] = useState(false);
   const [showSeat, setShowSeat] = useState(false);
+
+  const [Switch, setSwitch] = useState(false);
+
   const [seatClass, setSeatClass] = useState("");
   const seat = ["Economy", "First"];
+
+  const {
+    wordFrom,
+    wordGo,
+    setWordFrom,
+    setWordGo,
+    codeFrom,
+    setCodeFrom,
+    codeGo,
+    setCodeGo,
+  } = useContext(AuthContext);
 
   // ! Example for Date
   const [depDate, setDepDate] = useState(
@@ -50,6 +68,10 @@ export default function Flight() {
 
   const toggleSwitch = () => {
     setSwitch(!Switch);
+    setWordFrom(wordGo);
+    setWordGo(wordFrom);
+    setCodeFrom(codeGo);
+    setCodeGo(codeFrom);
   };
 
   const toggleShowFromDate = () => {
@@ -74,6 +96,32 @@ export default function Flight() {
     setShowFromDate(false);
     setShowSearchFromList(false);
     setShowSearchGoList(false);
+  };
+
+  // todo: search
+
+  useEffect(() => {
+    const resultFrom = CityData.filter((item) =>
+      item.city.toLowerCase().includes(wordFrom.toLowerCase())
+    );
+    setFilterFrom(resultFrom);
+
+    const resultGo = CityData.filter((item) =>
+      item.city.toLowerCase().includes(wordGo.toLowerCase())
+    );
+    setFilterGo(resultGo);
+  }, [wordFrom, wordGo]);
+
+  const ChangeCodeFrom = (city, code) => {
+    setWordFrom(city);
+    setCodeFrom(code);
+    toggleShowFromList();
+  };
+
+  const ChangeCodeGo = (city, code) => {
+    setWordGo(city);
+    setCodeGo(code);
+    toggleShowGoList();
   };
 
   return (
@@ -111,8 +159,10 @@ export default function Flight() {
                     toggleShowList={toggleShowFromList}
                     label={"จาก"}
                     placeholder={"ต้นทาง"}
-                    // value = {wordFrom}
-                    // changeValueSearch={setWordFrom}
+                    value={wordFrom}
+                    changeValueSearch={setWordFrom}
+                    FilterList={filterFrom}
+                    changeValue={ChangeCodeFrom}
                   />
                 </div>
                 {/* go */}
@@ -123,8 +173,10 @@ export default function Flight() {
                     toggleShowList={toggleShowGoList}
                     label={"ไปยัง"}
                     placeholder={"ปลายทาง"}
-                    // value = {wordFrom}
-                    // changeValueSearch={setWordFrom}
+                    value = {wordGo}
+                    changeValueSearch={setWordGo}
+                    FilterList={filterGo}
+                    changeValue={ChangeCodeGo}
                   />
                 </div>
                 <button

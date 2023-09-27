@@ -44,16 +44,16 @@ export default function FromSearch({
               &times;
             </button>
           </div>
-{/* 
-          {FilterList.map((item, idx) => (
+
+          {FilterList.map((item) => (
             <div
-              className="bg-white rounded-b-md overflow-y-auto max-h-[410px] p-5 cursor-pointer hover:opacity-80"
+              className="bg-white rounded-b-md overflow-y-auto max-h-[410px] p-5 cursor-pointer hover:bg-zinc-100"
               key={item.code}
               id={item.code}
-              onClick={changeValue(item.code)}>
-                <div>{item.city}</div>
-              </div>
-          ))} */}
+              onClick={()=>changeValue(item.city, item.code)}>
+              <div>{item.city}</div>
+            </div>
+          ))}
         </div>
       )}
     </>

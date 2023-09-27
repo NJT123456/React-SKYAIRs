@@ -31,6 +31,12 @@ export default function App({ Component, pageProps }) {
     };
   });
 
+  // !param
+  const [wordFrom, setWordFrom] = useState("");
+  const [wordGo, setWordGo] = useState("");
+  const [codeFrom, setCodeFrom] = useState("");
+  const [codeGo, setCodeGo] = useState("");
+
   // todo: login logout
   const [authState, setAuthState] = useState({
     username: "",
@@ -78,7 +84,20 @@ export default function App({ Component, pageProps }) {
         <Loading />
       ) : (
         <Suspense fallback={<Loading />}>
-          <AuthContext.Provider value={{ authState, setAuthState, logout }}>
+          <AuthContext.Provider
+            value={{
+              authState,
+              setAuthState,
+              logout,
+              wordFrom,
+              wordGo,
+              setWordFrom,
+              setWordGo,
+              codeFrom,
+              setCodeFrom,
+              codeGo,
+              setCodeGo,
+            }}>
             <Component {...pageProps} />
           </AuthContext.Provider>
         </Suspense>
