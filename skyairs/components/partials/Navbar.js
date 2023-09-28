@@ -134,7 +134,6 @@ export default function Navbar({ className }) {
         });
     }
   };
-  console.log(authState);
 
   return (
     <nav className={`bg-white h-[67px] shadow-md ${className}`}>

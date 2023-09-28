@@ -2,6 +2,7 @@ import Loading from "@/components/Loading";
 import { AuthContext } from "@/components/helpers/AuthContext";
 import "@/styles/globals.css";
 import axios from "axios";
+import dayjs from "dayjs";
 import { Prompt } from "next/font/google";
 import { useRouter } from "next/router";
 import { Suspense, useEffect, useState } from "react";
@@ -36,6 +37,17 @@ export default function App({ Component, pageProps }) {
   const [wordGo, setWordGo] = useState("");
   const [codeFrom, setCodeFrom] = useState("");
   const [codeGo, setCodeGo] = useState("");
+  const [depDate, setDepDate] = useState(
+    dayjs().add(0, "day").format("YYYY-MM-DD")
+  );
+
+  const [retDate, setRetDate] = useState(
+    dayjs().add(1, "day").format("YYYY-MM-DD")
+  );
+
+  const [type, setType] = useState("");
+
+  const [searchResults, setSearchResults] = useState([]);
 
   // todo: login logout
   const [authState, setAuthState] = useState({
@@ -71,6 +83,11 @@ export default function App({ Component, pageProps }) {
     localStorage.removeItem("accessToken");
     setAuthState({ username: "", id: 0, status: false });
   };
+
+  const formatDate = (Date) => {
+    return dayjs(Date).format("YYYY-MM-DD");
+  };
+
   return (
     <>
       <style jsx global>
@@ -97,6 +114,15 @@ export default function App({ Component, pageProps }) {
               setCodeFrom,
               codeGo,
               setCodeGo,
+              formatDate,
+              searchResults,
+              setSearchResults,
+              depDate,
+              setDepDate,
+              retDate,
+              setRetDate,
+              type,
+              setType,
             }}>
             <Component {...pageProps} />
           </AuthContext.Provider>

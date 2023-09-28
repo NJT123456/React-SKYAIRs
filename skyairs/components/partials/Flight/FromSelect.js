@@ -46,7 +46,7 @@ export default function FromSelect({
 
           {item.map((item, idx) => (
             <div
-              className="bg-white rounded-b-md overflow-y-auto max-h-[410px] p-5 cursor-pointer hover:opacity-80"
+              className="bg-white rounded-b-md overflow-y-auto max-h-[410px] p-5 cursor-pointer hover:bg-zinc-100"
               key={item}
               id={item}
               onClick={() => {

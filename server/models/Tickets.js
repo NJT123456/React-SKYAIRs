@@ -14,6 +14,16 @@ module.exports = (sequelize, Datatype) => {
       foreignKey: "flight_id",
       onDelete: "cascade",
     });
+    Tickets.belongsTo(models.Locations, {
+      foreignKey: "origin_id",
+      as: "origin",
+      onDelete: "cascade",
+    });
+    Tickets.belongsTo(models.Locations, {
+      foreignKey: "destination_id",
+      as: "destination",
+      onDelete: "cascade",
+    });
   };
   return Tickets;
 };

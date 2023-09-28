@@ -8,8 +8,12 @@ import dayjs from "dayjs";
 import FromSelect from "./FromSelect";
 import CityData from "@/data/city";
 import { AuthContext } from "@/components/helpers/AuthContext";
+import axios from "axios";
+import { useRouter } from "next/router";
 
 export default function Flight() {
+  const router = useRouter();
+
   const [flightTrip, setFlightTrip] = useState("oneway");
   const [filterFrom, setFilterFrom] = useState([]);
   const [filterGo, setFilterGo] = useState([]);
@@ -34,17 +38,15 @@ export default function Flight() {
     setCodeFrom,
     codeGo,
     setCodeGo,
+    formatDate,
+    searchResults,
+    setSearchResults,
+    depDate,
+    setDepDate,
+    retDate,
+    setRetDate,
+    type,
   } = useContext(AuthContext);
-
-  // ! Example for Date
-  const [depDate, setDepDate] = useState(
-    dayjs().add(0, "day").format("YYYY-MM-DD")
-  );
-
-  const [retDate, setRetDate] = useState(
-    dayjs().add(1, "day").format("YYYY-MM-DD")
-  );
-  // !-----------------
 
   const handleChangeFlightType = (e, newFlightTrip) => {
     setFlightTrip(newFlightTrip);
@@ -123,6 +125,52 @@ export default function Flight() {
     setCodeGo(code);
     toggleShowGoList();
   };
+
+  // !connect from database
+  const url = `http://localhost:3001/search?origin=${codeFrom}&destination=${codeGo}&seat_class=${seatClass}&dep_date=${formatDate(
+    depDate
+  )}`;
+
+  const onSubmit = () => {
+    const filteredFormData = {};
+
+    if (codeFrom) {
+      filteredFormData.depAirport = codeFrom;
+    }
+
+    if (codeGo) {
+      filteredFormData.arrAirport = codeGo;
+    }
+
+    if (depDate) {
+      filteredFormData.depDate = formatDate(depDate);
+    }
+
+    if (flightTrip === "roundtrip") {
+      if (retDate) {
+        filteredFormData.retDate = formatDate(retDate);
+      }
+    }
+
+    if (seatClass) {
+      filteredFormData.seatClass = seatClass;
+    }
+
+    if (type) {
+      filteredFormData.type = type;
+    }
+
+    axios.get(url).then((res) => {
+      if (res.data.msg === "No flights found for Date.") {
+        alert(res.data.msg);
+      } else {
+        setSearchResults(res.data);
+        router.push({ pathname: "/flight", query: filteredFormData });
+      }
+    });
+  };
+
+  console.log(searchResults);
 
   return (
     <div className="bg-white rounded shadow-md desktop:p-10 p-4">
@@ -216,7 +264,7 @@ export default function Flight() {
 
             {/* // todo: button search */}
 
-            <div className="py-1">
+            <div className="py-1" onClick={onSubmit}>
               <button className="flex items-center justify-center px-4 rounded-md min-h-[49px] desktop:min-h-full font-bold w-full text-white bg-secondary text-sm desktop:w-[107px] hover:bg-tertiary">
                 ค้นหา
               </button>
