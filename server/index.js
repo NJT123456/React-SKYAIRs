@@ -10,6 +10,9 @@ const db = require("./models");
 const usersRouter = require("./routes/Users");
 app.use("/auth", usersRouter);
 
+const searchRouter = require("./routes/Search");
+app.use("/search", searchRouter);
+
 db.sequelize.sync().then(() => {
   app.listen(3001, () => {
     console.log("Sever running on Port 3001");

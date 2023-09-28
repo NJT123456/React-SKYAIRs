@@ -148,7 +148,7 @@ export default function Flight() {
               />
             </Tabs>
           </Box>
-          <div className="relative mt-10 w-full desktop:w-auto md:w-[50%] desktop:flex desktop:gap-x-[10px]">
+          <div className="relative mt-10 w-full desktop:w-auto desktop:flex desktop:gap-x-[10px]">
             <div className="flex flex-col-reverse">
               <div className="desktop:relative desktop:flex desktop:gap-x-[10px]">
                 <div className="relative py-1">
@@ -173,7 +173,7 @@ export default function Flight() {
                     toggleShowList={toggleShowGoList}
                     label={"ไปยัง"}
                     placeholder={"ปลายทาง"}
-                    value = {wordGo}
+                    value={wordGo}
                     changeValueSearch={setWordGo}
                     FilterList={filterGo}
                     changeValue={ChangeCodeGo}
@@ -213,6 +213,14 @@ export default function Flight() {
               textHeader={"เลือกประเภทชั้นโดยสาร"}
               item={seat}
             />
+
+            {/* // todo: button search */}
+
+            <div className="py-1">
+              <button className="flex items-center justify-center px-4 rounded-md min-h-[49px] desktop:min-h-full font-bold w-full text-white bg-secondary text-sm desktop:w-[107px] hover:bg-tertiary">
+                ค้นหา
+              </button>
+            </div>
           </div>
         </Box>
       </TabContext>
