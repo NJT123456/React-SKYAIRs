@@ -1,20 +1,44 @@
 import Navbar from "@/components/partials/Navbar";
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { FaArrowRightLong, FaChevronRight } from "react-icons/fa6";
 import { BsThreeDots } from "react-icons/bs";
 import Flight from "@/components/partials/Flight/flight";
+import { AuthContext } from "@/components/helpers/AuthContext";
+import dayjs from "dayjs";
+import { useRouter } from "next/router";
+import axios from "axios";
 
 export default function FlightSearch() {
+  const router = useRouter();
+
   const flightContainerRef = useRef(null);
   const [showNavbar, setShowNavbar] = useState(true);
   const [changeFlight, setChangeFlight] = useState(false);
+
+  const {
+    searchResults,
+    uniqueFlights,
+    type,
+    setType,
+    formatNumber,
+    formatTime,
+    selectFormData,
+    setSelectFormData,
+    setSearchResults,
+    flightTrip,
+    codeFrom,
+    codeGo,
+    retDate,
+    depDate,
+    seatClass,
+    formatDate,
+    filteredFormData,
+  } = useContext(AuthContext);
 
   useEffect(() => {
     const updateScrollDirection = () => {
       const scrollY = flightContainerRef.current.scrollTop;
       const direction = scrollY > 67 ? false : true;
-      console.log("scrollY:", scrollY);
-      console.log("direction:", direction);
       setShowNavbar(direction);
     };
 
@@ -33,6 +57,54 @@ export default function FlightSearch() {
   const toggleChangeFlight = () => {
     setChangeFlight(!changeFlight);
   };
+
+  const timeDiff = (depTime, arrTime) => {
+    const startTime = dayjs(depTime, "HH:mm:ss");
+    const endTime = dayjs(arrTime, "HH:mm:ss");
+    const duration = endTime.diff(startTime);
+
+    return dayjs(duration).format("HH ชั่วโมง mm นาที");
+  };
+
+  const url = `http://localhost:3001/search?origin=${codeFrom}&destination=${codeGo}&seat_class=${seatClass}&dep_date=${formatDate(
+    depDate,
+    "YYYY-MM-DD"
+  )}${
+    flightTrip === "roundtrip"
+      ? `&ret_date=${formatDate(retDate, "YYYY-MM-DD")}`
+      : ""
+  }&type=return`;
+
+  const onSubmit = (data) => {
+    if (flightTrip === "oneway") {
+      setType("");
+      setSelectFormData([data]);
+    } else {
+      setType("return");
+
+      setSelectFormData(type === "return" ? [...selectFormData, data] : [data]);
+      type === "return"
+        ? router.push("/flight/confirm")
+        : router.push({
+            pathname: "/flight",
+            query: { ...filteredFormData, type: "return" },
+          });
+
+      axios.get(url).then((res) => {
+        if (res.data.msg === "No flights found for Date.") {
+          alert(res.data.msg);
+          router.push({
+            pathname: "/flight",
+            query: filteredFormData,
+          });
+        } else {
+          setSearchResults(res.data);
+        }
+      });
+    }
+  };
+
+  console.log(selectFormData);
 
   return (
     <main
@@ -58,20 +130,27 @@ export default function FlightSearch() {
               <div className="px-0 py-[10px] gap-x-5 items-center absolute transform -translate-y-[50%] scale-100 top-[50%]">
                 <div className="flex flex-col gap-y-[10px]">
                   {/* //todo: from database */}
+                  {uniqueFlights.map((value, idx) => (
+                    <>
+                      <div className="text-base font-bold flex gap-x-[5px] items-center whitespace-nowrap">
+                        <div key={`origin_city_thai-${idx}`}>
+                          {value.origin_city_thai}
+                        </div>
 
-                  <div className="text-base font-bold flex gap-x-[5px] items-center whitespace-nowrap">
-                    <div>origin-city</div>
+                        <div className="flex items-center" key={`sym-${idx}`}>
+                          <FaArrowRightLong className="block" />
+                        </div>
 
-                    <div className="flex items-center">
-                      <FaArrowRightLong className="block" />
-                    </div>
+                        <div key={`destination_city_thai-${idx}`}>
+                          {value.destination_city_thai}
+                        </div>
+                      </div>
 
-                    <div>destination-city</div>
-                  </div>
-
-                  <div className="flex whitespace-nowrap">
-                    <div>start-date</div>
-                  </div>
+                      <div className="flex whitespace-nowrap">
+                        <div key={`date_one-${idx}`}>{value.date}</div>
+                      </div>
+                    </>
+                  ))}
                 </div>
               </div>
             </div>
@@ -92,67 +171,95 @@ export default function FlightSearch() {
       <section className="w-full flex mt-1 p-5 flex-col">
         <div className="w-full flex gap-x-[10px]">
           {/* //? pull from database */}
-          <div className="flex flex-col gap-y-[5px] items-start">
-            <p className="text-base font-bold">
-              เที่ยวบินขาออก destination-city-thai if return เที่ยวบินขากลับ
-              destination_city_thai
-            </p>
-            <div className="flex gap-x-[5px]">start-date</div>
-          </div>
+          {uniqueFlights.map((value, idx) => (
+            <>
+              <div className="flex flex-col gap-y-[5px] items-start">
+                <p className="text-base font-bold" key={`text-${idx}`}>
+                  {type === "return" ? (
+                    <>เที่ยวบินขากลับ </>
+                  ) : (
+                    <>เที่ยวบินขาออก </>
+                  )}
+                  {value.destination_city_thai}
+                </p>
+                <div className="flex gap-x-[5px]" key={`date-${idx}`}>
+                  {value.date}
+                </div>
+              </div>
+            </>
+          ))}
         </div>
 
         {/* //? all data */}
         <section className="pt-5 pb-6">
           <div className="flex flex-col gap-y-[10px]">
             {/* //todo: map for all data */}
-            <div className="card-container">
-              <div className="airline-data desktop:pb-0 pb-4">
-                <p>data.origin_airport_thai</p>
-              </div>
-
-              <div className="da">
-                <div className="time-data desktop:pb-0 pb-4">
-                  <div>
-                    <p className="front-data">data.depart_time</p>
-                    <p className="code-data">data.origin_code</p>
-                  </div>
-
-                  <div className="icon-go-return">
-                    <BsThreeDots className="arrow" />
-                    <BsThreeDots className="arrow" />
-                    <FaChevronRight className="arrow-right" />
-                  </div>
-
-                  <div className="des">
-                    <p className="front-data">data.arrival_time</p>
-                    <p className="code-data">data.destination_code</p>
-                  </div>
+            {searchResults.map((data, idx) => (
+              <div className="card-container">
+                <div
+                  className="airline-data desktop:pb-0 pb-4"
+                  key={`airline-data-${idx}`}>
+                  <p>{data.origin_airport_thai}</p>
                 </div>
 
-                <div className="time-diff desktop:pb-0 pb-4">
-                  <div className="front">timeDifference</div>
-                </div>
+                <div className="da">
+                  <div className="time-data desktop:pb-0 pb-4">
+                    <div>
+                      <p className="front-data" key={`depart_time-${idx}`}>
+                        {formatTime(data.depart_time)}
+                      </p>
+                      <p className="code-data" key={`ori-code-${idx}`}>
+                        {data.origin.code}
+                      </p>
+                    </div>
 
-                <div className="price-select">
-                  <div className="price pb-4 desktop:pb-0;">
-                    <div className="price-flex ">
-                      <div className="relative-price">
-                        <div className="price">
-                          <span className="font-price">
-                            ฿ formatNumber(data.fare)
-                          </span>
-                          <span className="font-per"> /คน</span>
-                        </div>
-                      </div>
+                    <div className="icon-go-return">
+                      <BsThreeDots className="arrow" />
+                      <BsThreeDots className="arrow" />
+                      <FaChevronRight className="arrow-right" />
+                    </div>
+
+                    <div className="des">
+                      <p className="front-data" key={`arrival_time-${idx}`}>
+                        {formatTime(data.arrival_time)}
+                      </p>
+                      <p className="code-data" key={`des-code-${idx}`}>
+                        {data.destination.code}
+                      </p>
                     </div>
                   </div>
 
-                  <button className="select-price">
-                    <span>เลือก</span>
-                  </button>
+                  <div className="time-diff desktop:pb-0 pb-4">
+                    <div className="front" key={`airline-data-diff-${idx}`}>
+                      {timeDiff(data.depart_time, data.arrival_time)}
+                    </div>
+                  </div>
+
+                  <div className="price-select">
+                    <div className="price pb-4 desktop:pb-0;">
+                      <div className="price-flex ">
+                        <div className="relative-price">
+                          <div className="price">
+                            <span
+                              className="font-price"
+                              key={`price-data-${idx}`}>
+                              ฿ {formatNumber(data.fare)}
+                            </span>
+                            <span className="font-per"> /คน</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <button
+                      className="select-price"
+                      onClick={() => onSubmit(data)}>
+                      <span>เลือก</span>
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
+            ))}
           </div>
         </section>
       </section>

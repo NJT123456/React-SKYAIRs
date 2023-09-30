@@ -1,11 +1,10 @@
-import Loading from "@/components/Loading";
 import { AuthContext } from "@/components/helpers/AuthContext";
 import "@/styles/globals.css";
 import axios from "axios";
 import dayjs from "dayjs";
 import { Prompt } from "next/font/google";
 import { useRouter } from "next/router";
-import { Suspense, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
 const prompt = Prompt({
   weight: ["300", "400"],
@@ -13,26 +12,8 @@ const prompt = Prompt({
 });
 
 export default function App({ Component, pageProps }) {
-  const router = useRouter();
-
-  const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const handleStart = (url) => url !== router.asPath && setLoading(true);
-    const handleComplete = (url) => url === router.asPath && setLoading(false);
-
-    router.events.on("routeChangeStart", handleStart);
-    router.events.on("routeChangeComplete", handleComplete);
-    router.events.on("routeChangeError", handleComplete);
-
-    return () => {
-      router.events.off("routeChangeStart", handleStart);
-      router.events.off("routeChangeComplete", handleComplete);
-      router.events.off("routeChangeError", handleComplete);
-    };
-  });
-
-  // !param
+  // !
+  const [flightTrip, setFlightTrip] = useState("oneway");
   const [wordFrom, setWordFrom] = useState("");
   const [wordGo, setWordGo] = useState("");
   const [codeFrom, setCodeFrom] = useState("");
@@ -45,9 +26,14 @@ export default function App({ Component, pageProps }) {
     dayjs().add(1, "day").format("YYYY-MM-DD")
   );
 
+  const [seatClass, setSeatClass] = useState("");
+
   const [type, setType] = useState("");
 
   const [searchResults, setSearchResults] = useState([]);
+  const [selectFormData, setSelectFormData] = useState([{}]);
+
+  const [filteredFormData, setFilterFormData] = useState({});
 
   // todo: login logout
   const [authState, setAuthState] = useState({
@@ -84,8 +70,46 @@ export default function App({ Component, pageProps }) {
     setAuthState({ username: "", id: 0, status: false });
   };
 
-  const formatDate = (Date) => {
-    return dayjs(Date).format("YYYY-MM-DD");
+  const formatDate = (Date, format) => {
+    return format === "YYYY-MM-DD"
+      ? dayjs(Date).format("YYYY-MM-DD")
+      : format === "ddd, DD MMM"
+      ? dayjs(Date).format("ddd, DD MMM")
+      : format === "DD MMM YYYY"
+      ? dayjs(Date).format("DD MMM YYYY")
+      : "";
+  };
+
+  const formatTime = (Time) => {
+    const time = dayjs(Time, "HH:mm:ss");
+
+    return dayjs(time).format("HH:mm");
+  };
+
+  // todo:make group search
+
+  const flightSearchGroups = new Set();
+
+  searchResults.forEach((flight) => {
+    const originCityThai = flight.origin.city_thai.trim(); // Remove leading/trailing spaces
+    const destinationCityThai = flight.destination.city_thai.trim(); // Remove leading/trailing spaces
+    const date = flight.depart_date;
+
+    const key = JSON.stringify({
+      origin_city_thai: originCityThai,
+      destination_city_thai: destinationCityThai,
+      date: formatDate(date, "ddd, DD MMM"),
+    });
+
+    flightSearchGroups.add(key);
+  });
+
+  const uniqueFlights = Array.from(flightSearchGroups).map((key) =>
+    JSON.parse(key)
+  );
+
+  const formatNumber = (num) => {
+    return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   };
 
   return (
@@ -97,37 +121,43 @@ export default function App({ Component, pageProps }) {
           }
         `}
       </style>
-      {loading ? (
-        <Loading />
-      ) : (
-        <Suspense fallback={<Loading />}>
-          <AuthContext.Provider
-            value={{
-              authState,
-              setAuthState,
-              logout,
-              wordFrom,
-              wordGo,
-              setWordFrom,
-              setWordGo,
-              codeFrom,
-              setCodeFrom,
-              codeGo,
-              setCodeGo,
-              formatDate,
-              searchResults,
-              setSearchResults,
-              depDate,
-              setDepDate,
-              retDate,
-              setRetDate,
-              type,
-              setType,
-            }}>
-            <Component {...pageProps} />
-          </AuthContext.Provider>
-        </Suspense>
-      )}
+
+      <AuthContext.Provider
+        value={{
+          authState,
+          setAuthState,
+          logout,
+          wordFrom,
+          wordGo,
+          setWordFrom,
+          setWordGo,
+          codeFrom,
+          setCodeFrom,
+          codeGo,
+          setCodeGo,
+          formatDate,
+          searchResults,
+          setSearchResults,
+          depDate,
+          setDepDate,
+          retDate,
+          setRetDate,
+          type,
+          setType,
+          uniqueFlights,
+          formatNumber,
+          formatTime,
+          selectFormData,
+          setSelectFormData,
+          flightTrip,
+          setFlightTrip,
+          seatClass,
+          setSeatClass,
+          filteredFormData,
+          setFilterFormData,
+        }}>
+        <Component {...pageProps} />
+      </AuthContext.Provider>
     </>
   );
 }

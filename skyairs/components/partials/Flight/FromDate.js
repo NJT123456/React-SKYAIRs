@@ -51,7 +51,7 @@ export default function FromDate({
       <div className="flex relative flex-1 gap-x-[10px]">
         <div className="relative flex-1 py-1" id="button-from-date">
           <button
-            className={`text-left appearance-none bg-transparent cursor-pointer py-[10px] px-[15px] min-h-[68px] desktop:w-[285px] w-full overflow-hidden border-[0.5px] border-solid ${
+            className={`text-left appearance-none bg-transparent cursor-pointer py-[10px] px-[15px] min-h-[68px] desktop:w-[191px] min-[1460px]:w-[285px] w-full overflow-hidden border-[0.5px] border-solid ${
               showFromDate ? "border-red-600" : "border-[#d8d8d8]"
             } rounded-md`}
             onClick={toggleShowFromDate}>
@@ -76,7 +76,7 @@ export default function FromDate({
         <div className="flex relative flex-1 gap-x-[10px]">
           <div className="relative flex-1 py-1" id="button-go-date">
             <button
-              className={`text-left appearance-none bg-transparent cursor-pointer py-[10px] px-[15px] min-h-[68px] desktop:w-[285px] w-full overflow-hidden border-[0.5px] border-solid ${
+              className={`text-left appearance-none bg-transparent cursor-pointer py-[10px] px-[15px] min-h-[68px] desktop:w-[191px] w-full overflow-hidden border-[0.5px] border-solid ${
                 showGoDate ? "border-red-600" : "border-[#d8d8d8]"
               } rounded-md`}
               onClick={toggleShowGoDate}>

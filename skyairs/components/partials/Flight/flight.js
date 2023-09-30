@@ -4,7 +4,6 @@ import { Box, Tab, Tabs } from "@mui/material";
 import FromSearch from "./FromSearch";
 import { BsRepeat } from "react-icons/bs";
 import FromDate from "./FromDate";
-import dayjs from "dayjs";
 import FromSelect from "./FromSelect";
 import CityData from "@/data/city";
 import { AuthContext } from "@/components/helpers/AuthContext";
@@ -14,7 +13,6 @@ import { useRouter } from "next/router";
 export default function Flight() {
   const router = useRouter();
 
-  const [flightTrip, setFlightTrip] = useState("oneway");
   const [filterFrom, setFilterFrom] = useState([]);
   const [filterGo, setFilterGo] = useState([]);
 
@@ -26,7 +24,6 @@ export default function Flight() {
 
   const [Switch, setSwitch] = useState(false);
 
-  const [seatClass, setSeatClass] = useState("");
   const seat = ["Economy", "First"];
 
   const {
@@ -39,13 +36,17 @@ export default function Flight() {
     codeGo,
     setCodeGo,
     formatDate,
-    searchResults,
     setSearchResults,
     depDate,
     setDepDate,
     retDate,
     setRetDate,
-    type,
+    flightTrip,
+    setFlightTrip,
+    seatClass,
+    setSeatClass,
+    filteredFormData,
+    setFilterFormData,
   } = useContext(AuthContext);
 
   const handleChangeFlightType = (e, newFlightTrip) => {
@@ -128,12 +129,16 @@ export default function Flight() {
 
   // !connect from database
   const url = `http://localhost:3001/search?origin=${codeFrom}&destination=${codeGo}&seat_class=${seatClass}&dep_date=${formatDate(
-    depDate
-  )}`;
+    depDate,
+    "YYYY-MM-DD"
+  )}${
+    flightTrip === "roundtrip"
+      ? `&ret_date=${formatDate(retDate, "YYYY-MM-DD")}`
+      : ""
+  }
+  `;
 
   const onSubmit = () => {
-    const filteredFormData = {};
-
     if (codeFrom) {
       filteredFormData.depAirport = codeFrom;
     }
@@ -143,12 +148,12 @@ export default function Flight() {
     }
 
     if (depDate) {
-      filteredFormData.depDate = formatDate(depDate);
+      filteredFormData.depDate = formatDate(depDate, "YYYY-MM-DD");
     }
 
     if (flightTrip === "roundtrip") {
       if (retDate) {
-        filteredFormData.retDate = formatDate(retDate);
+        filteredFormData.retDate = formatDate(retDate, "YYYY-MM-DD");
       }
     }
 
@@ -156,21 +161,18 @@ export default function Flight() {
       filteredFormData.seatClass = seatClass;
     }
 
-    if (type) {
-      filteredFormData.type = type;
-    }
-
     axios.get(url).then((res) => {
       if (res.data.msg === "No flights found for Date.") {
         alert(res.data.msg);
       } else {
         setSearchResults(res.data);
+
         router.push({ pathname: "/flight", query: filteredFormData });
       }
     });
-  };
 
-  console.log(searchResults);
+    setFilterFormData(filteredFormData);
+  };
 
   return (
     <div className="bg-white rounded shadow-md desktop:p-10 p-4">

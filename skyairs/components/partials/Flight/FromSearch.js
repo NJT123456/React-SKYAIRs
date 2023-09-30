@@ -45,10 +45,10 @@ export default function FromSearch({
             </button>
           </div>
 
-          {FilterList.map((item) => (
+          {FilterList.map((item, idx) => (
             <div
               className="bg-white rounded-b-md overflow-y-auto max-h-[410px] p-5 cursor-pointer hover:bg-zinc-100"
-              key={item.code}
+              key={`code-${idx}`}
               id={item.code}
               onClick={()=>changeValue(item.city, item.code)}>
               <div>{item.city}</div>
