@@ -79,6 +79,7 @@ export default function FlightSearch() {
     if (flightTrip === "oneway") {
       setType("");
       setSelectFormData([data]);
+      router.push("/flight/confirm")
     } else {
       setType("return");
 

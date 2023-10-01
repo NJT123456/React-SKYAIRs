@@ -1,8 +1,8 @@
 module.exports = (sequelize, Datatype) => {
   const Schedules = sequelize.define("Schedules", {
     ref_no: Datatype.STRING(6),
-    flight_departdate: Datatype.DATE,
-    flight_returndate: Datatype.DATE,
+    flight_departdate: Datatype.DATEONLY,
+    flight_returndate: Datatype.DATEONLY,
     flight_fare: Datatype.FLOAT,
     total_fare: Datatype.FLOAT,
     seat_class: Datatype.STRING(),

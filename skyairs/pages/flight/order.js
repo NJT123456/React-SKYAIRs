@@ -1,6 +1,6 @@
 import Navbar from "@/components/partials/Navbar";
 import React from "react";
-import { FaArrowRightLong, FaChevronRight } from "react-icons/fa6";
+import { FaChevronRight } from "react-icons/fa6";
 import { BsThreeDots } from "react-icons/bs";
 
 export default function Order() {

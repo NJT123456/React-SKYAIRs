@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { TabContext, TabPanel } from "@mui/lab";
+import { TabContext } from "@mui/lab";
 import { Box, Tab, Tabs } from "@mui/material";
 import FromSearch from "./FromSearch";
 import { BsRepeat } from "react-icons/bs";
@@ -47,6 +47,8 @@ export default function Flight() {
     setSeatClass,
     filteredFormData,
     setFilterFormData,
+    setSelectFormData,
+    setType,
   } = useContext(AuthContext);
 
   const handleChangeFlightType = (e, newFlightTrip) => {
@@ -139,6 +141,8 @@ export default function Flight() {
   `;
 
   const onSubmit = () => {
+    setSelectFormData([{}]);
+    setType("");
     if (codeFrom) {
       filteredFormData.depAirport = codeFrom;
     }

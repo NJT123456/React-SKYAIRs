@@ -5,6 +5,8 @@ import axios from "axios";
 import { AuthContext } from "../helpers/AuthContext";
 
 export default function Navbar({ className }) {
+  const { setAuthState, authState, logout, showForm, setShowForm } =
+    useContext(AuthContext);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPw, setConfirmPw] = useState("");
@@ -14,8 +16,7 @@ export default function Navbar({ className }) {
   const [errorConfirmPw, setErrorConfirmPw] = useState("");
 
   const [showLinks, setShowLinks] = useState(false);
-  const [showForm, setShowForm] = useState(false);
-  const [showLogin, setShowLogin] = useState(false);
+  const [showLogin, setShowLogin] = useState(true);
   const [showRegister, setShowRegister] = useState(false);
 
   const navToggle = useRef(null);
@@ -58,7 +59,6 @@ export default function Navbar({ className }) {
   };
 
   // todo: login and register
-  const { setAuthState, authState, logout } = useContext(AuthContext);
 
   const FormValidation = (e) => {
     e.preventDefault();

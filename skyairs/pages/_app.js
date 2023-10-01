@@ -3,7 +3,6 @@ import "@/styles/globals.css";
 import axios from "axios";
 import dayjs from "dayjs";
 import { Prompt } from "next/font/google";
-import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const prompt = Prompt({
@@ -41,6 +40,7 @@ export default function App({ Component, pageProps }) {
     id: 0,
     status: false,
   });
+  const [showForm, setShowForm] = useState(false);
 
   useEffect(() => {
     axios
@@ -109,6 +109,9 @@ export default function App({ Component, pageProps }) {
   );
 
   const formatNumber = (num) => {
+    if (typeof num !== "number") {
+      return ""; // Handle invalid input gracefully
+    }
     return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   };
 
@@ -155,6 +158,8 @@ export default function App({ Component, pageProps }) {
           setSeatClass,
           filteredFormData,
           setFilterFormData,
+          showForm,
+          setShowForm,
         }}>
         <Component {...pageProps} />
       </AuthContext.Provider>

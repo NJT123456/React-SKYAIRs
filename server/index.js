@@ -13,6 +13,9 @@ app.use("/auth", usersRouter);
 const searchRouter = require("./routes/Search");
 app.use("/search", searchRouter);
 
+const confirmRouter = require("./routes/Confirm");
+app.use("/confirm", confirmRouter);
+
 db.sequelize.sync().then(() => {
   app.listen(3001, () => {
     console.log("Sever running on Port 3001");

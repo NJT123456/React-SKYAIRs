@@ -1,11 +1,10 @@
 import { AuthContext } from "@/components/helpers/AuthContext";
 import Navbar from "@/components/partials/Navbar";
 import axios from "axios";
-import { Field, Formik } from "formik";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import React, { useContext, useState } from "react";
-import { FaArrowRightLong, FaChevronRight } from "react-icons/fa6";
+import React, { useContext, useEffect, useState } from "react";
+import { FaArrowRightLong } from "react-icons/fa6";
 
 export default function Confirm() {
   const router = useRouter();
@@ -25,17 +24,19 @@ export default function Confirm() {
     formatNumber,
     formatDate,
     formatTime,
+    authState,
+    setShowForm
   } = useContext(AuthContext);
 
   const [confirm, setConfirm] = useState(false);
   const [showGender, setShowGender] = useState(false);
   const [Gender, setGender] = useState("");
+  const [fn, setFn] = useState("");
+  const [ln, setLn] = useState("");
+  const [email, setEmail] = useState("");
+  const [tel, setTel] = useState("");
 
-  const gender = ["male", "female"];
-
-  const toggleConfirm = () => {
-    setConfirm(!confirm);
-  };
+  const gender = ["MALE", "FEMALE"];
 
   const toggleShowGender = () => {
     setShowGender(!showGender);
@@ -50,6 +51,7 @@ export default function Confirm() {
       : ""
   }
   `;
+  console.log(url);
   const changeAllFlight = () => {
     setSelectFormData([{}]);
     setType("");
@@ -58,12 +60,42 @@ export default function Confirm() {
         alert(res.data.msg);
       } else {
         setSearchResults(res.data);
+
+        router.push({ pathname: "/flight", query: filteredFormData });
       }
     });
-    router.push({
-      pathname: "/flight",
-      query: filteredFormData,
-    });
+  };
+
+  const urlconfirm = `http://localhost:3001/confirm`;
+
+  useEffect(() => {
+    if (!localStorage.getItem("accessToken")) {
+      setShowForm(true);
+    }
+  }, []);
+
+  const toggleConfirm = () => {
+    if (!fn || !ln || !Gender || !email || !tel) {
+      alert("โปรดกรอกข้อมูลให้ครบทุกช่อง");
+    } else {
+      axios
+        .post(
+          urlconfirm,
+          {
+            fn: fn,
+            ln: ln,
+            gender: Gender,
+            email: email,
+            tel: tel,
+            selectFormData: selectFormData,
+          },
+          { headers: { accessToken: localStorage.getItem("accessToken") } }
+        )
+        .then((res) => {
+          console.log("res", res);
+          setConfirm(!confirm);
+        });
+    }
   };
 
   console.log(selectFormData);
@@ -75,8 +107,8 @@ export default function Confirm() {
         <div className="flex flex-col desktop:w-[75%]">
           {selectFormData.map((value, idx) => (
             // //? pull data */
-            <section className="w-full pb-4">
-              <div className="flex-1 flex-row desktop:mr-8">
+            <section className="w-full pb-4 desktop:pr-4">
+              <div className="flex-1 flex-row">
                 <div className="flex items-center justify-between p-8 bg-white border-b-[0.5px] border-gray">
                   <div className="hidden desktop:block">
                     <p className="text-base mb-3" key={`title-${idx}`}>
@@ -90,9 +122,11 @@ export default function Confirm() {
                     <div
                       className="flex items-center text-base font-bold mb-3"
                       key={`dep-arr-${idx}`}>
-                      {value.origin.city_thai} {value.origin.code}
+                      {value.origin && value.origin.city_thai}{" "}
+                      {value.origin && value.origin.code}
                       <FaArrowRightLong className="text-[14px] mx-5" />
-                      {value.destination.city_thai} {value.destination.code}
+                      {value.destination && value.destination.city_thai}{" "}
+                      {value.destination && value.destination.code}
                     </div>
                     <div key={`dapdate-${idx}`}>
                       {formatDate(value.depart_date, "DD MMM YYYY")}
@@ -102,7 +136,7 @@ export default function Confirm() {
                     <button
                       className="hs-button text-sm"
                       id="changeFlight"
-                      onClick={changeAllFlight}>
+                      onClick={() => changeAllFlight()}>
                       เปลี่ยนเที่ยวบิน
                     </button>
                   </div>
@@ -148,13 +182,14 @@ export default function Confirm() {
                             <p
                               className="font-bold mb-5"
                               key={`depCity-${idx}`}>
-                              {value.origin.city_thai} ({value.origin.code})
+                              {value.origin && value.origin.city_thai} (
+                              {value.origin && value.origin.code})
                             </p>
                           </div>
                           <div className="flex flex-col items-start">
                             <p className="font-bold" key={`arrCity-${idx}`}>
-                              {value.destination.city_thai}arrCity (
-                              {value.destination.code})
+                              {value.origin && value.destination.city_thai} (
+                              {value.origin && value.destination.code})
                             </p>
                           </div>
                         </div>
@@ -184,9 +219,10 @@ export default function Confirm() {
                         <div
                           className="text-sm font-bold  flex justify-center items-center"
                           key={`dep-arr-code-${idx}`}>
-                          ขาไป ({value.origin.code}
+                          {idx === 0 ? <>ขาไป </> : <>ขากลับ </>}(
+                          {value.origin && value.origin.code}
                           <FaArrowRightLong className="text-[14px] mx-2" />
-                          {value.destination.code})
+                          {value.destination && value.destination.code})
                         </div>
 
                         <div className="flex items-center">
@@ -224,11 +260,9 @@ export default function Confirm() {
         </div>
       </main>
 
-      <Formik
-        initialValues={{ fn: "", ln: "", gender: "", email: "", tel: "" }}
-        className="flex flex-col desktop:flex-row desktop:p-8 min-h-[50vh]">
+      <div className="flex flex-col desktop:flex-row desktop:px-4 min-h-[50vh]">
         <section className="desktop:w-[75%] w-full">
-          <div className="desktop:flex-1 flex-row desktop:mr-8">
+          <div className="desktop:flex-1 flex-row desktop:p-8 w-full">
             <div className="flex items-center justify-between p-8 bg-white border-b-[0.5px] border-gray">
               <div>
                 <p className="text-base mb-3">ข้อมูลติดต่อ</p>
@@ -240,9 +274,11 @@ export default function Confirm() {
                 <div className="flex-1 flex">
                   <div className="w-[50%] flex flex-col gap-y-2 text-sm">
                     <div className="field">
-                      <Field
+                      <input
                         id="fn"
                         name="fn"
+                        value={fn}
+                        onChange={(e) => setFn(e.target.value)}
                         placeholder=""
                         className="input-nav"
                         required
@@ -252,9 +288,11 @@ export default function Confirm() {
                   </div>
                   <div className="w-[50%] flex flex-col gap-y-2 text-sm">
                     <div className="field">
-                      <Field
+                      <input
                         id="ln"
                         name="ln"
+                        value={ln}
+                        onChange={(e) => setLn(e.target.value)}
                         placeholder=""
                         className="input-nav"
                         required
@@ -266,14 +304,14 @@ export default function Confirm() {
                 <div className="flex-1 flex cursor-pointer">
                   <div className="w-[50%] flex flex-col gap-y-2 text-sm cursor-pointer">
                     <div className={`field`}>
-                      <Field
+                      <input
                         id="gender"
                         name="gender"
                         placeholder=""
                         autoComplete="off"
-                        className="input-nav cursor-pointer"
+                        className="input-nav cursor-pointer capitalize"
                         onClick={toggleShowGender}
-                        value={Gender}
+                        value={Gender.toLowerCase()}
                         readOnly
                       />
                       <label
@@ -296,14 +334,16 @@ export default function Confirm() {
 
                           {gender.map((item, idx) => (
                             <div
-                              className="bg-white rounded-b-md overflow-y-auto max-h-[410px] p-5 cursor-pointer hover:opacity-80"
+                              className="bg-white rounded-b-md overflow-y-auto max-h-[410px] p-5 cursor-pointer hover:opacity-80 capitalize"
                               key={item}
                               id={item}
                               onClick={() => {
                                 setGender(item);
                                 toggleShowGender();
                               }}>
-                              <div>{item}</div>
+                              <div className="capitalize">
+                                {item.toLowerCase()}
+                              </div>
                             </div>
                           ))}
                         </div>
@@ -312,10 +352,12 @@ export default function Confirm() {
                   </div>
                   <div className="w-[50%] flex flex-col gap-y-2 text-sm">
                     <div className="field">
-                      <Field
+                      <input
                         type="text"
                         id="email"
                         name="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                         placeholder=""
                         className="input-nav"
                         required
@@ -327,10 +369,12 @@ export default function Confirm() {
                 <div className="flex-1 flex">
                   <div className="w-[50%] flex flex-col gap-y-2 text-sm">
                     <div className="field">
-                      <Field
+                      <input
                         type="tel"
                         id="tel"
                         name="tel"
+                        value={tel}
+                        onChange={(e) => setTel(e.target.value)}
                         placeholder=""
                         className="input-nav"
                         required
@@ -343,7 +387,7 @@ export default function Confirm() {
             </div>
           </div>
         </section>
-      </Formik>
+      </div>
 
       {confirm && (
         <div className="fixed inset-0 z-[9999] bg-black bg-opacity-40 flex justify-center items-center">

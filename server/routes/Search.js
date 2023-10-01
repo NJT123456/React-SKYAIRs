@@ -2,7 +2,6 @@ const express = require("express");
 const router = express.Router();
 const { Tickets, Locations } = require("../models");
 const { Op } = require("sequelize");
-const { validateToken } = require("../middlewares/AuthMiddlewares");
 
 router.get("/", async (req, res) => {
   const { origin, destination, seat_class, dep_date, ret_date, type } =
@@ -59,15 +58,6 @@ router.get("/", async (req, res) => {
   } else {
     res.json(search);
   }
-});
-
-// todo: select
-router.get("/select", validateToken, async (req, res) => {
-  const { flightnumber_book } = req.body;
-  const ticket = Tickets.fineOne({
-    where: { fnumber: flightnumber_book },
-  });
-  res.json(ticket)
 });
 
 module.exports = router;
