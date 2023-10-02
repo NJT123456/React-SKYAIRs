@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { validateToken } = require("../middlewares/AuthMiddlewares");
-const { Passengers, Users, Schedules, Tickets } = require("../models");
+const { Passengers, Users, Schedules } = require("../models");
 
 router.post("/", validateToken, async (req, res) => {
   const { fn, ln, email, tel, gender, selectFormData } = req.body;
