@@ -1,8 +1,10 @@
 import { AuthContext } from "@/components/helpers/AuthContext";
+import Loading from "@/components/partials/Loading";
 import "@/styles/globals.css";
 import axios from "axios";
 import dayjs from "dayjs";
 import { Prompt } from "next/font/google";
+import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 const prompt = Prompt({
@@ -11,7 +13,6 @@ const prompt = Prompt({
 });
 
 export default function App({ Component, pageProps }) {
-  // !
   const [flightTrip, setFlightTrip] = useState("oneway");
   const [wordFrom, setWordFrom] = useState("");
   const [wordGo, setWordGo] = useState("");
@@ -33,6 +34,28 @@ export default function App({ Component, pageProps }) {
   const [selectFormData, setSelectFormData] = useState([{}]);
 
   const [filteredFormData, setFilterFormData] = useState({});
+
+  // *loading
+  const [isLoading, setIsLoading] = useState(false);
+  const router = useRouter();
+
+  useEffect(() => {
+    const handleRouteChangeStart = () => {
+      setIsLoading(true);
+    };
+
+    const handleRouteChangeComplete = () => {
+      setIsLoading(false);
+    };
+
+    router.events.on("routeChangeStart", handleRouteChangeStart);
+    router.events.on("routeChangeComplete", handleRouteChangeComplete);
+
+    return () => {
+      router.events.off("routeChangeStart", handleRouteChangeStart);
+      router.events.off("routeChangeComplete", handleRouteChangeComplete);
+    };
+  }, [router]);
 
   // todo: login logout
   const [authState, setAuthState] = useState({
@@ -115,6 +138,22 @@ export default function App({ Component, pageProps }) {
     return num.toString().replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,");
   };
 
+  const resetAppState = () => {
+    setFlightTrip("oneway");
+    setWordFrom("");
+    setWordGo("");
+    setCodeFrom("");
+    setCodeGo("");
+    setDepDate(dayjs().add(0, "day").format("YYYY-MM-DD"));
+    setRetDate(dayjs().add(1, "day").format("YYYY-MM-DD"));
+    setSeatClass("");
+    setType("");
+    setSearchResults([]);
+    setSelectFormData([{}]);
+    setFilterFormData({});
+    setShowForm(false);
+  };
+
   return (
     <>
       <style jsx global>
@@ -160,8 +199,13 @@ export default function App({ Component, pageProps }) {
           setFilterFormData,
           showForm,
           setShowForm,
+          resetAppState,
         }}>
-        <Component {...pageProps} />
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <Component {...pageProps} />
+        )}
       </AuthContext.Provider>
     </>
   );

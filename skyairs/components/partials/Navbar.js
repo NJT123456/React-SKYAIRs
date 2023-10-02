@@ -5,8 +5,14 @@ import axios from "axios";
 import { AuthContext } from "../helpers/AuthContext";
 
 export default function Navbar({ className }) {
-  const { setAuthState, authState, logout, showForm, setShowForm } =
-    useContext(AuthContext);
+  const {
+    setAuthState,
+    authState,
+    logout,
+    showForm,
+    setShowForm,
+    resetAppState,
+  } = useContext(AuthContext);
   const [userName, setUserName] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPw, setConfirmPw] = useState("");
@@ -140,6 +146,7 @@ export default function Navbar({ className }) {
           <Link
             href="/"
             id="link-homepage-logo"
+            onClick={resetAppState}
             className="flex items-center text-[3rem] font-navbar italic font-bold">
             SKYAIRs
           </Link>
@@ -167,6 +174,7 @@ export default function Navbar({ className }) {
               <Link
                 href="/"
                 id="home"
+                onClick={resetAppState}
                 className="hover:opacity-80 md:relative md:after:block md:after:w-full md:after:h-[2px] md:after:bg-transparent md:after:absolute md:after:top-25 md:after:left-0 md:opacity-80 md:hover:after:bg-primary">
                 หน้าแรก
               </Link>
@@ -174,6 +182,7 @@ export default function Navbar({ className }) {
             <li>
               <Link
                 href="/flight"
+                onClick={resetAppState}
                 className="hover:opacity-80 md:relative md:after:block md:after:w-full md:after:h-[2px] md:after:bg-transparent md:after:absolute md:after:top-25 md:after:left-0 md:opacity-80 md:hover:after:bg-primary">
                 เที่ยวบิน
               </Link>
@@ -183,6 +192,7 @@ export default function Navbar({ className }) {
                 <li>
                   <Link
                     href="/flight/order"
+                    onClick={resetAppState}
                     className="hover:opacity-80 md:relative md:after:block md:after:w-full md:after:h-[2px] md:after:bg-transparent md:after:absolute md:after:top-25 md:after:left-0 md:opacity-80 md:hover:after:bg-primary">
                     คำสั่งซื้อ
                   </Link>
