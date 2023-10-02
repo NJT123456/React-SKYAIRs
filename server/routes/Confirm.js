@@ -1,7 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const { validateToken } = require("../middlewares/AuthMiddlewares");
-const { Passengers, Users, Schedules } = require("../models");
+const { Passengers, Users, Schedules, Tickets } = require("../models");
 
 router.post("/", validateToken, async (req, res) => {
   const { fn, ln, email, tel, gender, selectFormData } = req.body;
@@ -42,7 +42,7 @@ router.post("/", validateToken, async (req, res) => {
   let totalFare = 0;
 
   const lastSchedule = await Schedules.findOne({
-    order: [["createdAt", "DESC"]],
+    order: [['ref_no', 'DESC']],
   });
 
   if (lastSchedule) {
@@ -59,7 +59,7 @@ router.post("/", validateToken, async (req, res) => {
     totalFare += selectFormData[i].fare;
   }
 
-  await Schedules.create({
+  const depart_book = await Schedules.create({
     ref_no: nextRefNo,
     flight_departdate: selectFormData[0].depart_date,
     flight_returndate: selectFormData[1] ? selectFormData[1].depart_date : null,
@@ -72,9 +72,11 @@ router.post("/", validateToken, async (req, res) => {
     UserId: user.id,
   });
 
+  let return_book;
+
   if (selectFormData.length > 1) {
     const lastSchedule = await Schedules.findOne({
-      order: [["createdAt", "DESC"]],
+      order: [['ref_no', 'DESC']],
     });
     if (lastSchedule) {
       // หาเลขตัวสุดท้ายของ ref_no และเพิ่มขึ้น 1
@@ -85,7 +87,7 @@ router.post("/", validateToken, async (req, res) => {
       // ถ้าไม่มีข้อมูลในตารางให้ใช้ค่าเริ่มต้น
       nextRefNo = "RP1000";
     }
-    await Schedules.create({
+    return_book = await Schedules.create({
       ref_no: nextRefNo,
       flight_departdate: selectFormData[0].depart_date,
       flight_returndate: selectFormData[1]
@@ -101,7 +103,19 @@ router.post("/", validateToken, async (req, res) => {
     });
   }
 
-  res.json("create book");
+  if (return_book) {
+    res.json([depart_book, return_book]);
+  } else {
+    res.json([depart_book]);
+  }
+});
+
+router.post("/get_confirm", validateToken, async (req, res) => {
+  const ref_no = req.body.ref_no;
+  await Schedules.update(
+    { status: "CONFIRMED" },
+    { where: { ref_no: ref_no } }
+  );
 });
 
 module.exports = router;

@@ -133,7 +133,7 @@ export default function FlightSearch() {
                   {/* //todo: from database */}
                   {uniqueFlights.map((value, idx) => (
                     <>
-                      <div className="text-base font-bold flex gap-x-[5px] items-center whitespace-nowrap">
+                      <div className="text-base font-bold flex gap-x-[5px] items-center whitespace-nowrap" key={`uniqueFlight-${idx}`}>
                         <div key={`origin_city_thai-${idx}`}>
                           {value.origin_city_thai}
                         </div>

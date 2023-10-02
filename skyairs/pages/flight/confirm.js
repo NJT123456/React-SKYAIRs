@@ -25,7 +25,7 @@ export default function Confirm() {
     formatDate,
     formatTime,
     authState,
-    setShowForm
+    setShowForm,
   } = useContext(AuthContext);
 
   const [confirm, setConfirm] = useState(false);
@@ -35,6 +35,7 @@ export default function Confirm() {
   const [ln, setLn] = useState("");
   const [email, setEmail] = useState("");
   const [tel, setTel] = useState("");
+  const [schedules, setSchedules] = useState([]);
 
   const gender = ["MALE", "FEMALE"];
 
@@ -94,9 +95,32 @@ export default function Confirm() {
         .then((res) => {
           console.log("res", res);
           setConfirm(!confirm);
+
+          setSchedules(res.data);
         });
     }
   };
+
+  const toggleCloseConfirm = () =>{
+    setConfirm(!confirm)
+  }
+
+  const url_getConfirm = `http://localhost:3001/confirm/get_confirm`;
+
+  const getConfirm = (ref_no) => {
+    axios.post(
+      url_getConfirm,
+      {
+        ref_no: ref_no,
+      },
+      {
+        headers: { accessToken: localStorage.getItem("accessToken") },
+      }
+    );
+    router.push("/flight/order");
+  };
+
+  console.log(schedules);
 
   console.log(selectFormData);
   return (
@@ -392,6 +416,15 @@ export default function Confirm() {
       {confirm && (
         <div className="fixed inset-0 z-[9999] bg-black bg-opacity-40 flex justify-center items-center">
           <div className="z-[10000] bg-[#d6dce5] border border-solid border-[#888] rounded-xl active-nav p-4">
+            <div className="flex justify-between">
+              <div></div>
+              <button
+                className="border-none bg-transparent cursor-pointer text-5xl hover:opacity-80"
+                id="close-search"
+                onClick={toggleCloseConfirm}>
+                &times;
+              </button>
+            </div>
             <div className="w-full flex flex-col gap-y-9 justify-center items-center p-4">
               <svg
                 viewBox="0 0 26 26"
@@ -417,12 +450,28 @@ export default function Confirm() {
               <div className="font-bold text-xl text-center">
                 Congratulations, Your Flight are booking confirmed.
               </div>
-              <Link
-                href="order"
-                className="bg-primary text-white flex justify-center items-center font-bold p-4 rounded-md hover:opacity-80"
+              {schedules.map((schedule, idx) => (
+                <div
+                  key={idx}
+                  className="font-bold text-base text-center flex items-center justify-center">
+                  Booking Ref: {schedule.ref_no},{" "}
+                  {selectFormData[idx].origin.code}{" "}
+                  <FaArrowRightLong className="text-[14px] mx-2" />{" "}
+                  {selectFormData[idx].destination.code}
+                </div>
+              ))}
+
+              <div
+                onClick={() => {
+                  getConfirm(schedules[0].ref_no);
+                  if (schedules.length > 1) {
+                    getConfirm(schedules[1].ref_no);
+                  }
+                }}
+                className="bg-primary text-white flex justify-center items-center font-bold p-4 rounded-md hover:opacity-80 cursor-pointer"
                 id="link-to-order">
                 กลับไปหน้าคำสั่งทั้งหมด
-              </Link>
+              </div>
             </div>
           </div>
         </div>
