@@ -241,7 +241,7 @@ export default function Confirm() {
                         {/* todo: add airport code to the search result */}
 
                         <div
-                          className="text-sm font-bold  flex justify-center items-center"
+                          className="text-sm font-bold flex justify-center items-center"
                           key={`dep-arr-code-${idx}`}>
                           {idx === 0 ? <>ขาไป </> : <>ขากลับ </>}(
                           {value.origin && value.origin.code}

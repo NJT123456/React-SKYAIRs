@@ -91,6 +91,7 @@ export default function App({ Component, pageProps }) {
   const logout = () => {
     localStorage.removeItem("accessToken");
     setAuthState({ username: "", id: 0, status: false });
+    router.push('/')
   };
 
   const formatDate = (Date, format) => {

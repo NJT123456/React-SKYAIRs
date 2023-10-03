@@ -1,61 +1,127 @@
 import Navbar from "@/components/partials/Navbar";
-import React from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { FaChevronRight } from "react-icons/fa6";
 import { BsThreeDots } from "react-icons/bs";
+import axios from "axios";
+import { AuthContext } from "@/components/helpers/AuthContext";
 
 export default function Order() {
+  const { formatDate } = useContext(AuthContext);
+  const [listOrder, setListOrder] = useState([]);
+
+  const url = `http://localhost:3001/order`;
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(url, {
+          headers: { accessToken: localStorage.getItem("accessToken") },
+        });
+        setListOrder(response.data);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+  console.log(listOrder);
+
+  const getStatusColor = (status) => {
+    if (status === "CONFIRMED") {
+      return "text-green-600";
+    } else if (status === "CANCELLED") {
+      return "text-red-600";
+    } else {
+      return "";
+    }
+  };
+
+  const capitalizeStatus = (status) => {
+    if (!status) {
+      return "";
+    }
+
+    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()
+  };
   return (
     <div>
       <Navbar className={"sticky top-0 z-30"} />
 
-      <section className="w-full px-4 pt-5 pb-6">
-        <div className="flex flex-col gap-y-[10px] ">
-          <div className="card-container">
-            <div className="da">
-              <div className="flex flex-col desktop:pb-0 pb-4">
-                <div className="time-data">
-                  <p className="text-base font-bold">data.origin_city</p>
-                  <div className="icon-go-return text-base font-bold">
-                    <BsThreeDots className="arrow" />
-                    <BsThreeDots className="arrow" />
-                    <FaChevronRight className="arrow-right" />
+      <div className="px-4 pb-6">
+        {listOrder.map((value, idx) => (
+          <section className="w-full pt-5" key={idx}>
+            <div className="flex flex-col gap-y-[10px] ">
+              <div className="card-container">
+                <div className="da">
+                  <div className="flex flex-col desktop:pb-0 pb-4">
+                    <div className="time-data">
+                      <p
+                        className="text-base font-bold"
+                        key={`origin-city-${idx}`}>
+                        {value.flight.origin.city_thai}
+                      </p>
+                      <div className="icon-go-return text-base font-bold">
+                        <BsThreeDots className="arrow" />
+                        <BsThreeDots className="arrow" />
+                        <FaChevronRight className="arrow-right" />
+                      </div>
+                      <div className="des">
+                        <p
+                          className="text-base font-bold"
+                          key={`destination-city-${idx}`}>
+                          {value.flight.destination.city_thai}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex flex-col pt-4 items-center justify-center desktop:items-start">
+                      <p key={`ref-no-${idx}`}>REF NO : {value.ref_no}</p>
+                      <p key={`flight-num-${idx}`}>
+                        FLIGHT NUMBER : {value.flight.fnumber}
+                      </p>
+                      <p key={`seat-${idx}`}>ชั้นโดยสาร : {value.seat_class}</p>
+                      <p key={`total-${idx}`}>
+                        จำนวนเงินที่ชำระ : {value.total_fare} บาท
+                      </p>
+                    </div>
                   </div>
-                  <div className="des">
-                    <p className="text-base font-bold">data-destination-city</p>
+                  <div className="flex flex-col h-[120px]">
+                    <div className="time-diff">
+                      <p className="text-base font-bold">
+                        รายละเอียดคำสั่งซื้อ
+                      </p>
+                    </div>
+                    <div className="flex flex-col pt-4">
+                      <p key={`booking-${idx}`}>
+                        วันที่จอง :{" "}
+                        {formatDate(value.booking_date, "DD MMM YYYY")}
+                      </p>
+                      <p>
+                        สถานะการจอง :{" "}
+                        <span
+                          key={`status-${idx}`}
+                          className={`${getStatusColor(
+                            value.status
+                          )}`}>
+                          {capitalizeStatus(value.status)}
+                        </span>
+                      </p>
+                    </div>
+                  </div>
+                  <div className="flex desktop:flex-col justify-center items-center gap-y-2">
+                    <button className="select-price !w-[132px]">
+                      <span>e-Ticket</span>
+                    </button>
+                    <button className="select-price !bg-red-600 !w-[132px] hover:!bg-red-800">
+                      <span>Cancel</span>
+                    </button>
                   </div>
                 </div>
-
-                <div className="flex flex-col pt-4 items-center justify-center desktop:items-start">
-                  <p>REF NO : data</p>
-                  <p>FLIGHT NUMBER : data</p>
-                  <p>ชั้นโดยสาร : data</p>
-                  <p>จำนวนเงินที่ชำระ : data บาท</p>
-                </div>
-              </div>
-
-              <div className="flex flex-col h-[120px]">
-                <div className="time-diff">
-                  <p className="text-base font-bold">รายละเอียดคำสั่งซื้อ</p>
-                </div>
-
-                <div className="flex flex-col pt-4">
-                  <p>วันที่จอง : data</p>
-                  <p>สถานะการจอง : data</p>
-                </div>
-              </div>
-
-              <div className="flex desktop:flex-col justify-center items-center gap-y-2">
-                <button className="select-price !w-[132px]">
-                  <span>e-Ticket</span>
-                </button>
-                <button className="select-price !bg-red-600 !w-[132px] hover:!bg-red-800">
-                  <span>Cancel</span>
-                </button>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
+        ))}
+      </div>
     </div>
   );
 }
