@@ -27,4 +27,8 @@ router.get("/", validateToken, async (req, res) => {
   res.json(schedulesWithTickets);
 });
 
+router.post('/cancel', validateToken, async (req,res)=>{
+
+})
+
 module.exports = router;

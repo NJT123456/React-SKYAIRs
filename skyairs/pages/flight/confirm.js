@@ -36,7 +36,7 @@ export default function Confirm() {
   const [email, setEmail] = useState("");
   const [tel, setTel] = useState("");
   const [schedules, setSchedules] = useState([]);
-
+  console.log(schedules);
   const gender = ["MALE", "FEMALE"];
 
   const toggleShowGender = () => {
@@ -52,7 +52,7 @@ export default function Confirm() {
       : ""
   }
   `;
-  console.log(url);
+
   const changeAllFlight = () => {
     setSelectFormData([{}]);
     setType("");
@@ -68,12 +68,6 @@ export default function Confirm() {
   };
 
   const urlconfirm = `http://localhost:3001/confirm`;
-
-  useEffect(() => {
-    if (!localStorage.getItem("accessToken")) {
-      setShowForm(true);
-    }
-  }, []);
 
   const toggleConfirm = () => {
     if (!fn || !ln || !Gender || !email || !tel) {
@@ -94,16 +88,20 @@ export default function Confirm() {
         )
         .then((res) => {
           console.log("res", res);
-          setConfirm(!confirm);
+          if (!localStorage.getItem("accessToken")) {
+            setShowForm(true);
+          } else {
+            setConfirm(!confirm);
 
-          setSchedules(res.data);
+            setSchedules(res.data);
+          }
         });
     }
   };
 
-  const toggleCloseConfirm = () =>{
-    setConfirm(!confirm)
-  }
+  const toggleCloseConfirm = () => {
+    setConfirm(!confirm);
+  };
 
   const url_getConfirm = `http://localhost:3001/confirm/get_confirm`;
 
@@ -120,9 +118,6 @@ export default function Confirm() {
     router.push("/flight/order");
   };
 
-  console.log(schedules);
-
-  console.log(selectFormData);
   return (
     <>
       <Navbar className={"sticky top-0 z-30"} />

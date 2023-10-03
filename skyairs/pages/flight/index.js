@@ -79,11 +79,17 @@ export default function FlightSearch() {
     if (flightTrip === "oneway") {
       setType("");
       setSelectFormData([data]);
-      router.push("/flight/confirm")
+      localStorage.setItem("selectFormData", JSON.stringify([data]));
+
+      router.push("/flight/confirm");
     } else {
       setType("return");
 
       setSelectFormData(type === "return" ? [...selectFormData, data] : [data]);
+      localStorage.setItem(
+        "selectFormData",
+        JSON.stringify(type === "return" ? [...selectFormData, data] : [data])
+      );
       type === "return"
         ? router.push("/flight/confirm")
         : router.push({
@@ -104,6 +110,7 @@ export default function FlightSearch() {
       });
     }
   };
+
 
   console.log(selectFormData);
 
@@ -132,8 +139,8 @@ export default function FlightSearch() {
                 <div className="flex flex-col gap-y-[10px]">
                   {/* //todo: from database */}
                   {uniqueFlights.map((value, idx) => (
-                    <>
-                      <div className="text-base font-bold flex gap-x-[5px] items-center whitespace-nowrap" key={`uniqueFlight-${idx}`}>
+                    <div key={`flight-${idx}`}>
+                      <div className="text-base font-bold flex gap-x-[5px] items-center whitespace-nowrap">
                         <div key={`origin_city_thai-${idx}`}>
                           {value.origin_city_thai}
                         </div>
@@ -150,7 +157,7 @@ export default function FlightSearch() {
                       <div className="flex whitespace-nowrap">
                         <div key={`date_one-${idx}`}>{value.date}</div>
                       </div>
-                    </>
+                    </div>
                   ))}
                 </div>
               </div>

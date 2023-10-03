@@ -49,6 +49,7 @@ export default function Flight() {
     setFilterFormData,
     setSelectFormData,
     setType,
+    searchResults,
   } = useContext(AuthContext);
 
   const handleChangeFlightType = (e, newFlightTrip) => {
@@ -170,7 +171,6 @@ export default function Flight() {
         alert(res.data.msg);
       } else {
         setSearchResults(res.data);
-
         router.push({ pathname: "/flight", query: filteredFormData });
       }
     });
