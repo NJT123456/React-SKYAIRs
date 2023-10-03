@@ -109,11 +109,14 @@ export default function Order() {
                     </div>
                   </div>
                   <div className="flex desktop:flex-col justify-center items-center gap-y-2">
-                    <button className="select-price !w-[132px]">
-                      <span>e-Ticket</span>
+                    <button className="select-price !bg-green-600 !w-[132px] hover:!bg-green-800">
+                      <span>Confirmed</span>
                     </button>
                     <button className="select-price !bg-red-600 !w-[132px] hover:!bg-red-800">
                       <span>Cancel</span>
+                    </button>
+                    <button className="select-price !w-[132px]">
+                      <span>e-Ticket</span>
                     </button>
                   </div>
                 </div>
