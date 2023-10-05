@@ -1,6 +1,7 @@
 import { AuthContext } from "@/components/helpers/AuthContext";
 import Navbar from "@/components/partials/Navbar";
 import axios from "axios";
+import dayjs from "dayjs";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
@@ -43,15 +44,17 @@ export default function Confirm() {
     setShowGender(!showGender);
   };
 
-  const url = `http://localhost:3001/search?origin=${codeFrom}&destination=${codeGo}&seat_class=${seatClass}&dep_date=${formatDate(
+  const url = `http://localhost:3001/search?depAirport=${codeFrom}&arrAirport=${codeGo}&seatClass=${seatClass}&depDate=${formatDate(
     depDate,
     "YYYY-MM-DD"
   )}${
     flightTrip === "roundtrip"
-      ? `&ret_date=${formatDate(retDate, "YYYY-MM-DD")}`
+      ? `&retDate=${formatDate(retDate, "YYYY-MM-DD")}`
       : ""
   }
   `;
+
+  
 
   const changeAllFlight = () => {
     setSelectFormData([{}]);
@@ -99,8 +102,19 @@ export default function Confirm() {
     }
   };
 
-  const toggleCloseConfirm = () => {
-    setConfirm(!confirm);
+  const url_dont_confirm = `http://localhost:3001/confirm/dont_confirm`;
+
+  const toggleCloseConfirm = (ref_no) => {
+    axios
+      .delete(
+        url_dont_confirm,{
+          data: { ref_no: ref_no },
+          headers: { accessToken: localStorage.getItem("accessToken") },
+        }
+      )
+      .then((res) => {
+        setConfirm(!confirm);
+      });
   };
 
   const url_getConfirm = `http://localhost:3001/confirm/get_confirm`;
@@ -118,6 +132,13 @@ export default function Confirm() {
     router.push("/flight/order");
   };
 
+  useEffect(()=>{
+    const havelocalSelect = localStorage.getItem('selectFormData')
+    if(havelocalSelect){
+      setSelectFormData(JSON.parse(havelocalSelect))
+    }
+  },[])
+
   return (
     <>
       <Navbar className={"sticky top-0 z-30"} />
@@ -126,7 +147,7 @@ export default function Confirm() {
         <div className="flex flex-col desktop:w-[75%]">
           {selectFormData.map((value, idx) => (
             // //? pull data */
-            <section className="w-full pb-4 desktop:pr-4">
+            <section className="w-full pb-4 desktop:pr-4" key={idx}>
               <div className="flex-1 flex-row">
                 <div className="flex items-center justify-between p-8 bg-white border-b-[0.5px] border-gray">
                   <div className="hidden desktop:block">
@@ -186,7 +207,7 @@ export default function Confirm() {
                         <div className="relative flex flex-col items-start justify-between">
                           <div className="flex flex-col gap-y-5 items-start">
                             <p className="font-bold" key={`deptime-${idx}`}>
-                              {formatTime(value.depart_time)}
+                            {formatTime(value.depart_time)}
                             </p>
                           </div>
                           <div className="relative flex flex-col items-start gap-y-5">
@@ -232,7 +253,7 @@ export default function Confirm() {
                 <div className="desktop:pt-8 desktop:pb-15 desktop:pb-8">
                   {selectFormData.map((value, idx) => {
                     return (
-                      <div className="hidden desktop:flex items-center justify-between">
+                      <div className="hidden desktop:flex items-center justify-between" key={idx}>
                         {/* todo: add airport code to the search result */}
 
                         <div
@@ -246,7 +267,7 @@ export default function Confirm() {
 
                         <div className="flex items-center">
                           <p className="text-sm font-bold" key={`price-${idx}`}>
-                            ฿ {formatNumber(value.fare)}
+                            ฿ {formatNumber(value.fare)}{" "}
                             price
                           </p>
                         </div>
@@ -416,7 +437,11 @@ export default function Confirm() {
               <button
                 className="border-none bg-transparent cursor-pointer text-5xl hover:opacity-80"
                 id="close-search"
-                onClick={toggleCloseConfirm}>
+                onClick={() => {
+                  toggleCloseConfirm(schedules[0].ref_no);
+                  if (schedules.length > 1)
+                    toggleCloseConfirm(schedules[1].ref_no);
+                }}>
                 &times;
               </button>
             </div>

@@ -91,7 +91,7 @@ export default function App({ Component, pageProps }) {
   const logout = () => {
     localStorage.removeItem("accessToken");
     setAuthState({ username: "", id: 0, status: false });
-    router.push('/')
+    router.push("/");
   };
 
   const formatDate = (Date, format) => {
@@ -104,11 +104,20 @@ export default function App({ Component, pageProps }) {
       : "";
   };
 
-  const formatTime = (Time) => {
-    const time = dayjs(Time, "HH:mm:ss");
-
-    return dayjs(time).format("HH:mm");
+  const formatTime = (timeString) => {
+    // Parse the time string into a Date object
+    const time = new Date(`1970-01-01T${timeString}`);
+    
+    // Check if the parsed time is a valid date
+    if (!isNaN(time.getTime())) {
+      // Format the time as needed
+      return dayjs(time).format("HH:mm");
+    } else {
+      // Handle the case where the time is invalid
+      return "Invalid Time";
+    }
   };
+  
 
   // todo:make group search
 
@@ -202,11 +211,7 @@ export default function App({ Component, pageProps }) {
           setShowForm,
           resetAppState,
         }}>
-        {isLoading ? (
-          <Loading />
-        ) : (
-          <Component {...pageProps} />
-        )}
+        {isLoading ? <Loading /> : <Component {...pageProps} />}
       </AuthContext.Provider>
     </>
   );

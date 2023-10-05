@@ -42,7 +42,7 @@ router.post("/", validateToken, async (req, res) => {
   let totalFare = 0;
 
   const lastSchedule = await Schedules.findOne({
-    order: [['ref_no', 'DESC']],
+    order: [["ref_no", "DESC"]],
   });
 
   if (lastSchedule) {
@@ -76,7 +76,7 @@ router.post("/", validateToken, async (req, res) => {
 
   if (selectFormData.length > 1) {
     const lastSchedule = await Schedules.findOne({
-      order: [['ref_no', 'DESC']],
+      order: [["ref_no", "DESC"]],
     });
     if (lastSchedule) {
       // หาเลขตัวสุดท้ายของ ref_no และเพิ่มขึ้น 1
@@ -108,6 +108,14 @@ router.post("/", validateToken, async (req, res) => {
   } else {
     res.json([depart_book]);
   }
+});
+
+router.delete("/dont_confirm", validateToken, async (req, res) => {
+  const ref_no = req.body.ref_no;
+  await Schedules.destroy({
+    where: { ref_no: ref_no },
+  });
+  res.json("DELETE SUCCESSFULLY");
 });
 
 router.post("/get_confirm", validateToken, async (req, res) => {

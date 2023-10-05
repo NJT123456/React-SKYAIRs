@@ -131,12 +131,12 @@ export default function Flight() {
   };
 
   // !connect from database
-  const url = `http://localhost:3001/search?origin=${codeFrom}&destination=${codeGo}&seat_class=${seatClass}&dep_date=${formatDate(
+  const url = `http://localhost:3001/search?depAirport=${codeFrom}&arrAirport=${codeGo}&seatClass=${seatClass}&depDate=${formatDate(
     depDate,
     "YYYY-MM-DD"
   )}${
     flightTrip === "roundtrip"
-      ? `&ret_date=${formatDate(retDate, "YYYY-MM-DD")}`
+      ? `&retDate=${formatDate(retDate, "YYYY-MM-DD")}`
       : ""
   }
   `;

@@ -8,6 +8,10 @@ import { AuthContext } from "@/components/helpers/AuthContext";
 export default function Order() {
   const { formatDate } = useContext(AuthContext);
   const [listOrder, setListOrder] = useState([]);
+  const button = [
+    { button: "Cancel", color: "!bg-red-600", hoverButton: "!bg-red-800" },
+    { button: "e - Ticket" },
+  ];
 
   const url = `http://localhost:3001/order`;
 
@@ -42,8 +46,18 @@ export default function Order() {
       return "";
     }
 
-    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase()
+    return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
   };
+
+  const updateStatus = (status) => {
+    if (status === "Cancel") {
+
+    }
+    if (status === "e - Ticket") {
+      
+    }
+  };
+
   return (
     <div>
       <Navbar className={"sticky top-0 z-30"} />
@@ -100,24 +114,24 @@ export default function Order() {
                         สถานะการจอง :{" "}
                         <span
                           key={`status-${idx}`}
-                          className={`${getStatusColor(
-                            value.status
-                          )}`}>
+                          className={`${getStatusColor(value.status)}`}>
                           {capitalizeStatus(value.status)}
                         </span>
                       </p>
                     </div>
                   </div>
                   <div className="flex desktop:flex-col justify-center items-center gap-y-2">
-                    <button className="select-price !bg-green-600 !w-[132px] hover:!bg-green-800">
-                      <span>Confirmed</span>
-                    </button>
-                    <button className="select-price !bg-red-600 !w-[132px] hover:!bg-red-800">
-                      <span>Cancel</span>
-                    </button>
-                    <button className="select-price !w-[132px]">
-                      <span>e-Ticket</span>
-                    </button>
+                    {value.status !== "CANCELLED" &&
+                      button.map((value, idx) => {
+                        return (
+                          <button
+                            className={`select-price ${value.color} hover:${value.hoverButton} !w-[132px] `}
+                            key={idx}
+                            onClick={() => updateStatus(value.button)}>
+                            {value.button}
+                          </button>
+                        );
+                      })}
                   </div>
                 </div>
               </div>

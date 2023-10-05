@@ -10,6 +10,8 @@ import axios from "axios";
 
 export default function FlightSearch() {
   const router = useRouter();
+  const { depAirport, arrAirport, seatClass, depDate, retDate, type } =
+    router.query;
 
   const flightContainerRef = useRef(null);
   const [showNavbar, setShowNavbar] = useState(true);
@@ -18,7 +20,7 @@ export default function FlightSearch() {
   const {
     searchResults,
     uniqueFlights,
-    type,
+    // type,
     setType,
     formatNumber,
     formatTime,
@@ -26,11 +28,11 @@ export default function FlightSearch() {
     setSelectFormData,
     setSearchResults,
     flightTrip,
-    codeFrom,
-    codeGo,
-    retDate,
-    depDate,
-    seatClass,
+    // codeFrom,
+    // codeGo,
+    // retDate,
+    // depDate,
+    // seatClass,
     formatDate,
     filteredFormData,
   } = useContext(AuthContext);
@@ -66,53 +68,70 @@ export default function FlightSearch() {
     return dayjs(duration).format("HH ชั่วโมง mm นาที");
   };
 
-  const url = `http://localhost:3001/search?origin=${codeFrom}&destination=${codeGo}&seat_class=${seatClass}&dep_date=${formatDate(
+  const url = `http://localhost:3001/search?depAirport=${depAirport}&arrAirport=${arrAirport}&seatClass=${seatClass}&depDate=${formatDate(
     depDate,
     "YYYY-MM-DD"
   )}${
     flightTrip === "roundtrip"
-      ? `&ret_date=${formatDate(retDate, "YYYY-MM-DD")}`
+      ? `&retDate=${formatDate(retDate, "YYYY-MM-DD")}`
       : ""
-  }&type=return`;
+  }`;
+
+  console.log(url);
+
+  useEffect(() => {
+    if (type === "return") {
+      const newUrl = `http://localhost:3001/search?depAirport=${depAirport}&arrAirport=${arrAirport}&seatClass=${seatClass}&depDate=${formatDate(
+        depDate,
+        "YYYY-MM-DD"
+      )}&retDate=${formatDate(retDate, "YYYY-MM-DD")}&type=return`;
+
+      axios.get(newUrl).then((res) => {
+        if (res.data.msg === "No flights found for Date.") {
+          alert(res.data.msg);
+        } else {
+          setSearchResults(res.data);
+        }
+      });
+    }else{
+      axios.get(url).then((res) => {
+        if (res.data.msg === "No flights found for Date.") {
+          alert(res.data.msg);
+        } else {
+          setSearchResults(res.data);
+        }
+      });
+    }
+  }, []);
 
   const onSubmit = (data) => {
     if (flightTrip === "oneway") {
       setType("");
       setSelectFormData([data]);
       localStorage.setItem("selectFormData", JSON.stringify([data]));
-
       router.push("/flight/confirm");
     } else {
       setType("return");
 
-      setSelectFormData(type === "return" ? [...selectFormData, data] : [data]);
-      localStorage.setItem(
-        "selectFormData",
-        JSON.stringify(type === "return" ? [...selectFormData, data] : [data])
-      );
-      type === "return"
-        ? router.push("/flight/confirm")
-        : router.push({
-            pathname: "/flight",
-            query: { ...filteredFormData, type: "return" },
-          });
+      const newSelectFormData =
+        type === "return" ? [...selectFormData, data] : [data];
+      setSelectFormData(newSelectFormData);
+      localStorage.setItem("selectFormData", JSON.stringify(newSelectFormData));
 
-      axios.get(url).then((res) => {
-        if (res.data.msg === "No flights found for Date.") {
-          alert(res.data.msg);
-          router.push({
-            pathname: "/flight",
-            query: filteredFormData,
-          });
-        } else {
-          setSearchResults(res.data);
-        }
-      });
+      if (type === "return") {
+        router.push("/flight/confirm");
+      } else {
+        // ระบุ type เป็น "return" และรีไรเร็คไปหน้าค้นหา flight
+        router.push({
+          pathname: "/flight",
+          query: { ...filteredFormData, type: "return" },
+        });
+      }
     }
   };
 
-
   console.log(selectFormData);
+  console.log(searchResults);
 
   return (
     <main
