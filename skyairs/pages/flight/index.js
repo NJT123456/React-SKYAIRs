@@ -77,30 +77,31 @@ export default function FlightSearch() {
       : ""
   }`;
 
-  console.log(url);
-
   useEffect(() => {
-    if (type === "return") {
-      const newUrl = `http://localhost:3001/search?depAirport=${depAirport}&arrAirport=${arrAirport}&seatClass=${seatClass}&depDate=${formatDate(
-        depDate,
-        "YYYY-MM-DD"
-      )}&retDate=${formatDate(retDate, "YYYY-MM-DD")}&type=return`;
+    // Check the URL pathname to determine if you should make the axios requests
+    if (router.pathname !== "/flight") {
+      if (type === "return") {
+        const newUrl = `http://localhost:3001/search?depAirport=${depAirport}&arrAirport=${arrAirport}&seatClass=${seatClass}&depDate=${formatDate(
+          depDate,
+          "YYYY-MM-DD"
+        )}&retDate=${formatDate(retDate, "YYYY-MM-DD")}&type=return`;
 
-      axios.get(newUrl).then((res) => {
-        if (res.data.msg === "No flights found for Date.") {
-          alert(res.data.msg);
-        } else {
-          setSearchResults(res.data);
-        }
-      });
-    }else{
-      axios.get(url).then((res) => {
-        if (res.data.msg === "No flights found for Date.") {
-          alert(res.data.msg);
-        } else {
-          setSearchResults(res.data);
-        }
-      });
+        axios.get(newUrl).then((res) => {
+          if (res.data.msg === "No flights found for Date.") {
+            alert(res.data.msg);
+          } else {
+            setSearchResults(res.data);
+          }
+        });
+      } else {
+        axios.get(url).then((res) => {
+          if (res.data.msg === "No flights found for Date.") {
+            alert(res.data.msg);
+          } else {
+            setSearchResults(res.data);
+          }
+        });
+      }
     }
   }, []);
 
@@ -129,9 +130,6 @@ export default function FlightSearch() {
       }
     }
   };
-
-  console.log(selectFormData);
-  console.log(searchResults);
 
   return (
     <main
@@ -199,7 +197,7 @@ export default function FlightSearch() {
         <div className="w-full flex gap-x-[10px]">
           {/* //? pull from database */}
           {uniqueFlights.map((value, idx) => (
-            <>
+            <div key={'uni-${idx}'}>
               <div className="flex flex-col gap-y-[5px] items-start">
                 <p className="text-base font-bold" key={`text-${idx}`}>
                   {type === "return" ? (
@@ -213,7 +211,7 @@ export default function FlightSearch() {
                   {value.date}
                 </div>
               </div>
-            </>
+            </div>
           ))}
         </div>
 

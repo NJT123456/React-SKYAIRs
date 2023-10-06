@@ -5,9 +5,14 @@ module.exports = (sequelize, Datatype) => {
     gender: Datatype.ENUM("MALE", "FEMALE"),
   });
 
-
   Passengers.associate = (models) => {
     Passengers.hasMany(models.Passenger_schedule, {
+      onDelete: "cascade",
+    });
+
+    Passengers.belongsTo(models.Users, {
+      foreignKey: "UserId",
+      as: "user",
       onDelete: "cascade",
     });
   };

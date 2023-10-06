@@ -4,10 +4,12 @@ import { FaChevronRight } from "react-icons/fa6";
 import { BsThreeDots } from "react-icons/bs";
 import axios from "axios";
 import { AuthContext } from "@/components/helpers/AuthContext";
+import { saveAs } from "file-saver";
 
 export default function Order() {
   const { formatDate } = useContext(AuthContext);
   const [listOrder, setListOrder] = useState([]);
+  const [pdfData, setPdfData] = useState(null);
   const button = [
     { button: "Cancel", color: "!bg-red-600", hoverButton: "!bg-red-800" },
     { button: "e - Ticket" },
@@ -29,7 +31,6 @@ export default function Order() {
 
     fetchData();
   }, []);
-  console.log(listOrder);
 
   const getStatusColor = (status) => {
     if (status === "CONFIRMED") {
@@ -49,13 +50,63 @@ export default function Order() {
     return status.charAt(0).toUpperCase() + status.slice(1).toLowerCase();
   };
 
-  const updateStatus = (status) => {
-    if (status === "Cancel") {
+  // *updataStatus
+  const urlStatus = `http://localhost:3001/order/updateStatus`;
 
-    }
-    if (status === "e - Ticket") {
-      
-    }
+  const updateStatus = (status, value) => {
+    axios
+      .post(
+        urlStatus,
+        {
+          status: status,
+          ref_no: value,
+        },
+        { headers: { accessToken: localStorage.getItem("accessToken") } }
+      )
+      .then((res) => {
+        console.log(res.data);
+        if (res.data === "Update Success") {
+          // * update listOrder
+          const updateListOrder = listOrder.map((item) => {
+            if (item.ref_no === value) {
+              return { ...item, status: "CANCELLED" };
+            }
+            return item;
+          });
+          setListOrder(updateListOrder);
+        }
+
+        if (status === "e - Ticket") {
+          if (res.data) {
+            const data = {
+              ref_no: res.data.ref_no,
+              booking_date: res.data.booking_date,
+              flight_departdate: res.data.flight_departdate,
+              seat_class: res.data.seat_class,
+              passenger: res.data.passenger,
+              status: res.data.status,
+              flight: res.data.flight,
+              flight_fare: res.data.flight_fare,
+              total_fare: res.data.total_fare,
+            };
+            axios
+              .post(`http://localhost:3001/order/createPdf`, data)
+              .then((res) => {
+                axios
+                  .get(`http://localhost:3001/order/fetchPdf`, {
+                    responseType: "blob",
+                  })
+                  .then((res) => {
+                    const pdfBlob = new Blob([res.data], {
+                      type: "application/pdf",
+                    });
+
+                    saveAs(pdfBlob, `order_${value}.pdf`);
+                  });
+              });
+          }
+        }
+      });
   };
 
   return (
@@ -122,13 +173,15 @@ export default function Order() {
                   </div>
                   <div className="flex desktop:flex-col justify-center items-center gap-y-2">
                     {value.status !== "CANCELLED" &&
-                      button.map((value, idx) => {
+                      button.map((btn, idx) => {
                         return (
                           <button
-                            className={`select-price ${value.color} hover:${value.hoverButton} !w-[132px] `}
+                            className={`select-price ${btn.color} hover:${btn.hoverButton} !w-[132px] `}
                             key={idx}
-                            onClick={() => updateStatus(value.button)}>
-                            {value.button}
+                            onClick={() =>
+                              updateStatus(btn.button, value.ref_no)
+                            }>
+                            {btn.button}
                           </button>
                         );
                       })}

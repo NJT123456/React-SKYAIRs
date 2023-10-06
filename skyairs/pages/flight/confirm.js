@@ -37,7 +37,6 @@ export default function Confirm() {
   const [email, setEmail] = useState("");
   const [tel, setTel] = useState("");
   const [schedules, setSchedules] = useState([]);
-  console.log(schedules);
   const gender = ["MALE", "FEMALE"];
 
   const toggleShowGender = () => {
@@ -54,8 +53,6 @@ export default function Confirm() {
   }
   `;
 
-  
-
   const changeAllFlight = () => {
     setSelectFormData([{}]);
     setType("");
@@ -70,11 +67,30 @@ export default function Confirm() {
     });
   };
 
+  // * check email
+  const isValidEmail = (email) => {
+    // Regular expression to validate an email address
+    const emailPattern =
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+    return emailPattern.test(email);
+  };
+
+  // * check tel
+  const isValidPhoneNumber = (tel) => {
+    // Use a regular expression to match exactly 10 digits
+    const phoneNumberPattern = /^\d{10}$/;
+    return phoneNumberPattern.test(tel);
+  };
+
   const urlconfirm = `http://localhost:3001/confirm`;
 
   const toggleConfirm = () => {
     if (!fn || !ln || !Gender || !email || !tel) {
       alert("โปรดกรอกข้อมูลให้ครบทุกช่อง");
+    } else if (!isValidEmail(email)) {
+      alert("กรุณากรอกที่อยู่อีเมลที่ถูกต้อง");
+    } else if (!isValidPhoneNumber(tel)) {
+      alert("กรุณากรอกเบอร์โทรให้ครบ");
     } else {
       axios
         .post(
@@ -90,7 +106,6 @@ export default function Confirm() {
           { headers: { accessToken: localStorage.getItem("accessToken") } }
         )
         .then((res) => {
-          console.log("res", res);
           if (!localStorage.getItem("accessToken")) {
             setShowForm(true);
           } else {
@@ -106,12 +121,10 @@ export default function Confirm() {
 
   const toggleCloseConfirm = (ref_no) => {
     axios
-      .delete(
-        url_dont_confirm,{
-          data: { ref_no: ref_no },
-          headers: { accessToken: localStorage.getItem("accessToken") },
-        }
-      )
+      .delete(url_dont_confirm, {
+        data: { ref_no: ref_no },
+        headers: { accessToken: localStorage.getItem("accessToken") },
+      })
       .then((res) => {
         setConfirm(!confirm);
       });
@@ -132,12 +145,12 @@ export default function Confirm() {
     router.push("/flight/order");
   };
 
-  useEffect(()=>{
-    const havelocalSelect = localStorage.getItem('selectFormData')
-    if(havelocalSelect){
-      setSelectFormData(JSON.parse(havelocalSelect))
+  useEffect(() => {
+    const havelocalSelect = localStorage.getItem("selectFormData");
+    if (havelocalSelect) {
+      setSelectFormData(JSON.parse(havelocalSelect));
     }
-  },[])
+  }, []);
 
   return (
     <>
@@ -207,7 +220,7 @@ export default function Confirm() {
                         <div className="relative flex flex-col items-start justify-between">
                           <div className="flex flex-col gap-y-5 items-start">
                             <p className="font-bold" key={`deptime-${idx}`}>
-                            {formatTime(value.depart_time)}
+                              {formatTime(value.depart_time)}
                             </p>
                           </div>
                           <div className="relative flex flex-col items-start gap-y-5">
@@ -253,7 +266,9 @@ export default function Confirm() {
                 <div className="desktop:pt-8 desktop:pb-15 desktop:pb-8">
                   {selectFormData.map((value, idx) => {
                     return (
-                      <div className="hidden desktop:flex items-center justify-between" key={idx}>
+                      <div
+                        className="hidden desktop:flex items-center justify-between"
+                        key={idx}>
                         {/* todo: add airport code to the search result */}
 
                         <div
@@ -267,8 +282,7 @@ export default function Confirm() {
 
                         <div className="flex items-center">
                           <p className="text-sm font-bold" key={`price-${idx}`}>
-                            ฿ {formatNumber(value.fare)}{" "}
-                            price
+                            ฿ {formatNumber(value.fare)} price
                           </p>
                         </div>
                       </div>
@@ -374,7 +388,7 @@ export default function Confirm() {
 
                           {gender.map((item, idx) => (
                             <div
-                              className="bg-white rounded-b-md overflow-y-auto max-h-[410px] p-5 cursor-pointer hover:opacity-80 capitalize"
+                              className="bg-white rounded-b-md overflow-y-auto max-h-[410px] p-5 cursor-pointer hover:bg-zinc-100 capitalize"
                               key={item}
                               id={item}
                               onClick={() => {

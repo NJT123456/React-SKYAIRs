@@ -20,6 +20,12 @@ module.exports = (sequelize, Datatype) => {
       as: "flight",
       onDelete: "cascade",
     });
+
+    Schedules.belongsTo(models.Passengers, {
+      foreignKey: "UserId",
+      as: "passenger",
+      onDelete: "cascade",
+    });
   };
 
   return Schedules;
