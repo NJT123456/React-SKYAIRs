@@ -6,10 +6,6 @@ module.exports = (sequelize, Datatype) => {
   });
 
   Passengers.associate = (models) => {
-    Passengers.hasMany(models.Passenger_schedule, {
-      onDelete: "cascade",
-    });
-
     Passengers.belongsTo(models.Users, {
       foreignKey: "UserId",
       as: "user",
