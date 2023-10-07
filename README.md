@@ -6,3 +6,17 @@ Tools
 - Database : MySQL
 - Backend Framework: Node.js
 - Frontend Framework : Next.js
+
+# What to do
+1. Update the database with the table data for Locations and Tickets.
+2. Launch 2 Powershell and enter the following code.  
+  2.1 First Powershell
+   
+   ``` bash
+    cd server; npm start
+    ```
+   2.2 Seconde Powershell
+
+   ``` bash
+    cd skyairs; npm run dev
+    ```
