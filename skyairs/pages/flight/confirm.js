@@ -85,35 +85,35 @@ export default function Confirm() {
   const urlconfirm = `http://localhost:3001/confirm`;
 
   const toggleConfirm = () => {
-    if (!fn || !ln || !Gender || !email || !tel) {
-      alert("โปรดกรอกข้อมูลให้ครบทุกช่อง");
-    } else if (!isValidEmail(email)) {
-      alert("กรุณากรอกที่อยู่อีเมลที่ถูกต้อง");
-    } else if (!isValidPhoneNumber(tel)) {
-      alert("กรุณากรอกเบอร์โทรให้ครบ");
+    if (!localStorage.getItem("accessToken")) {
+      setShowForm(true);
     } else {
-      axios
-        .post(
-          urlconfirm,
-          {
-            fn: fn,
-            ln: ln,
-            gender: Gender,
-            email: email,
-            tel: tel,
-            selectFormData: selectFormData,
-          },
-          { headers: { accessToken: localStorage.getItem("accessToken") } }
-        )
-        .then((res) => {
-          if (!localStorage.getItem("accessToken")) {
-            setShowForm(true);
-          } else {
+      if (!fn || !ln || !Gender || !email || !tel) {
+        alert("โปรดกรอกข้อมูลให้ครบทุกช่อง");
+      } else if (!isValidEmail(email)) {
+        alert("กรุณากรอกที่อยู่อีเมลที่ถูกต้อง");
+      } else if (!isValidPhoneNumber(tel)) {
+        alert("กรุณากรอกเบอร์โทรให้ครบ");
+      } else {
+        axios
+          .post(
+            urlconfirm,
+            {
+              fn: fn,
+              ln: ln,
+              gender: Gender,
+              email: email,
+              tel: tel,
+              selectFormData: selectFormData,
+            },
+            { headers: { accessToken: localStorage.getItem("accessToken") } }
+          )
+          .then((res) => {
             setConfirm(!confirm);
 
             setSchedules(res.data);
-          }
-        });
+          });
+      }
     }
   };
 
@@ -306,7 +306,7 @@ export default function Confirm() {
             </div>
             <button
               className="hs-button text-sm w-full mt-8"
-              id="changeFlight"
+              id="confirmFlight"
               onClick={toggleConfirm}>
               ยืนยันการจอง
             </button>
@@ -450,7 +450,7 @@ export default function Confirm() {
               <div></div>
               <button
                 className="border-none bg-transparent cursor-pointer text-5xl hover:opacity-80"
-                id="close-search"
+                id="close-confirm"
                 onClick={() => {
                   toggleCloseConfirm(schedules[0].ref_no);
                   if (schedules.length > 1)

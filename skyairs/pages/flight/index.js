@@ -68,41 +68,24 @@ export default function FlightSearch() {
     return dayjs(duration).format("HH ชั่วโมง mm นาที");
   };
 
-  const url = `http://localhost:3001/search?depAirport=${depAirport}&arrAirport=${arrAirport}&seatClass=${seatClass}&depDate=${formatDate(
+  const Url = `http://localhost:3001/search?depAirport=${depAirport}&arrAirport=${arrAirport}&seatClass=${seatClass}&depDate=${formatDate(
     depDate,
     "YYYY-MM-DD"
-  )}${
-    flightTrip === "roundtrip"
-      ? `&retDate=${formatDate(retDate, "YYYY-MM-DD")}`
-      : ""
-  }`;
+  )}&retDate=${formatDate(retDate, "YYYY-MM-DD")}&type=${type}`;
+
+  const getData = () => {
+    axios.get(Url).then((res) => {
+      if (res.data.msg === "There is no information on the return flight.") {
+        alert(res.data.msg);
+        setSearchResults([]);
+      } else {
+        setSearchResults(res.data);
+      }
+    });
+  };
 
   useEffect(() => {
-    // Check the URL pathname to determine if you should make the axios requests
-    if (router.pathname !== "/flight") {
-      if (type === "return") {
-        const newUrl = `http://localhost:3001/search?depAirport=${depAirport}&arrAirport=${arrAirport}&seatClass=${seatClass}&depDate=${formatDate(
-          depDate,
-          "YYYY-MM-DD"
-        )}&retDate=${formatDate(retDate, "YYYY-MM-DD")}&type=return`;
-
-        axios.get(newUrl).then((res) => {
-          if (res.data.msg === "No flights found for Date.") {
-            alert(res.data.msg);
-          } else {
-            setSearchResults(res.data);
-          }
-        });
-      } else {
-        axios.get(url).then((res) => {
-          if (res.data.msg === "No flights found for Date.") {
-            alert(res.data.msg);
-          } else {
-            setSearchResults(res.data);
-          }
-        });
-      }
-    }
+    getData();
   }, []);
 
   const onSubmit = (data) => {
@@ -122,7 +105,6 @@ export default function FlightSearch() {
       if (type === "return") {
         router.push("/flight/confirm");
       } else {
-        // ระบุ type เป็น "return" และรีไรเร็คไปหน้าค้นหา flight
         router.push({
           pathname: "/flight",
           query: { ...filteredFormData, type: "return" },
@@ -197,15 +179,14 @@ export default function FlightSearch() {
         <div className="w-full flex gap-x-[10px]">
           {/* //? pull from database */}
           {uniqueFlights.map((value, idx) => (
-            <div key={'uni-${idx}'}>
+            <div key={"uni-${idx}"}>
               <div className="flex flex-col gap-y-[5px] items-start">
                 <p className="text-base font-bold" key={`text-${idx}`}>
                   {type === "return" ? (
-                    <>เที่ยวบินขากลับ </>
+                    <>เที่ยวบินขากลับ {value.origin_city_thai}</>
                   ) : (
-                    <>เที่ยวบินขาออก </>
+                    <>เที่ยวบินขาออก {value.destination_city_thai}</>
                   )}
-                  {value.destination_city_thai}
                 </p>
                 <div className="flex gap-x-[5px]" key={`date-${idx}`}>
                   {value.date}
@@ -278,7 +259,8 @@ export default function FlightSearch() {
 
                     <button
                       className="select-price"
-                      onClick={() => onSubmit(data)}>
+                      onClick={() => onSubmit(data)}
+                      id={`submit-${idx}`}>
                       <span>เลือก</span>
                     </button>
                   </div>

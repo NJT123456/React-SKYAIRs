@@ -27,25 +27,6 @@ export default function FromDate({
     setRetDate(newValue);
   };
 
-  // useEffect(() => {
-  //   const handleResize = () => {
-  //     const minWidth = 1360;
-  //     const currentWidth = window.innerWidth;
-
-  //     if (currentWidth >= minWidth) {
-  //       setNumberOfMonths(2);
-  //     } else {
-  //       setNumberOfMonths(1);
-  //     }
-  //   };
-
-  //   handleResize();
-  //   window.addEventListener("resize", handleResize);
-  //   return () => {
-  //     window.removeEventListener("resize", handleResize);
-  //   };
-  // }, []);
-
   return (
     <>
       <div className="flex relative flex-1 gap-x-[10px]">

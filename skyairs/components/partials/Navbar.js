@@ -295,7 +295,7 @@ export default function Navbar({ className }) {
                             className="w-full btn">
                             Login
                           </button>
-                          <span className="float-right pb-5 cursor-pointer">
+                          <span className="float-right pb-5 cursor-pointer" id="registration">
                             <a
                               onClick={() => toggleSwitch("Registration")}
                               className="bg-transparent hover:text-red-600 visited:text-[#385285]">
@@ -369,7 +369,7 @@ export default function Navbar({ className }) {
                           <span className="float-right pb-5 cursor-pointer">
                             <a
                               onClick={() => toggleSwitch("Login")}
-                              className="bg-transparent hover:text-red-600 visited:text-[#385285]">
+                              className="bg-transparent hover:text-red-600 visited:text-[#385285]" id="go-login">
                               มีบัญชีอยู่แล้ว
                             </a>
                           </span>

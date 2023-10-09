@@ -173,14 +173,14 @@ export default function Order() {
                   </div>
                   <div className="flex desktop:flex-col justify-center items-center gap-y-2">
                     {value.status !== "CANCELLED" &&
-                      button.map((btn, idx) => {
+                      button.map((btn, id) => {
                         return (
                           <button
                             className={`select-price ${btn.color} hover:${btn.hoverButton} !w-[132px] `}
-                            key={idx}
+                            key={id}
                             onClick={() =>
                               updateStatus(btn.button, value.ref_no)
-                            }>
+                            } id={`${btn.button}-${idx}`}>
                             {btn.button}
                           </button>
                         );

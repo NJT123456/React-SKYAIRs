@@ -167,7 +167,7 @@ export default function Flight() {
     }
 
     axios.get(url).then((res) => {
-      if (res.data.msg === "No flights found for Date.") {
+      if (res.data.msg === "There is no information on the departure flight.") {
         alert(res.data.msg);
       } else {
         setSearchResults(res.data);
@@ -235,7 +235,7 @@ export default function Flight() {
                 </div>
                 <button
                   className={`switch-button ${Switch ? "active-switch" : ""}`}
-                  onClick={toggleSwitch}>
+                  onClick={toggleSwitch} id="switch-button">
                   <div className="icon">
                     <BsRepeat />
                   </div>
@@ -270,7 +270,7 @@ export default function Flight() {
 
             {/* // todo: button search */}
 
-            <div className="py-1" onClick={onSubmit}>
+            <div className="py-1" onClick={onSubmit} id="search">
               <button className="flex items-center justify-center px-4 rounded-md min-h-[49px] desktop:min-h-full font-bold w-full text-white bg-secondary text-sm desktop:w-[107px] hover:bg-tertiary">
                 ค้นหา
               </button>

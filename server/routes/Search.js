@@ -1,23 +1,27 @@
 const express = require("express");
 const router = express.Router();
 const { Tickets, Locations } = require("../models");
-const { Op } = require("sequelize");
 
 router.get("/", async (req, res) => {
   const { depAirport, arrAirport, seatClass, depDate, retDate, type } =
     req.query;
-  const originLocations = await Locations.findAll({
-    where: { code: { [Op.or]: [depAirport, arrAirport] } },
-  });
 
-  const originLocationIds = originLocations.map((location) => location.id);
+    const originLocations = await Locations.findAll({
+      where: { code: depAirport },
+    });
+    const destinationLocations = await Locations.findAll({
+      where: { code: arrAirport },
+    });
+  
+    const originLocationIds = originLocations.map((location) => location.id);
+    const destinationLocationIds = destinationLocations.map((location) => location.id);
 
   let search;
   if (type === "return") {
     search = await Tickets.findAll({
       where: {
-        origin_id: { [Op.in]: originLocationIds },
-        destination_id: { [Op.in]: originLocationIds },
+        origin_id: destinationLocationIds,
+        destination_id: originLocationIds,
         seat_class: seatClass,
         depart_date: retDate,
       },
@@ -32,11 +36,17 @@ router.get("/", async (req, res) => {
         },
       ],
     });
+
+    if (search.length === 0) {
+      res.json({ msg: "There is no information on the return flight." });
+    } else {
+      res.json(search);
+    }
   } else {
     search = await Tickets.findAll({
       where: {
-        origin_id: { [Op.in]: originLocationIds },
-        destination_id: { [Op.in]: originLocationIds },
+        origin_id: originLocationIds,
+        destination_id: destinationLocationIds,
         seat_class: seatClass,
         depart_date: depDate,
       },
@@ -51,12 +61,11 @@ router.get("/", async (req, res) => {
         },
       ],
     });
-  }
-
-  if (search.length === 0) {
-    res.json({ msg: "No flights found for Date." });
-  } else {
-    res.json(search);
+    if (search.length === 0) {
+      res.json({ msg: "There is no information on the departure flight." });
+    } else {
+      res.json(search);
+    }
   }
 });
 
