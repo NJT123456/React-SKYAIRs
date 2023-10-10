@@ -215,7 +215,7 @@ export default function Navbar({ className }) {
 
             <li>
               <button
-                id="link-registration"
+                id={`${!authState.status ? "link-registration" : "logout"}`}
                 className={`${
                   !authState.status ? "!bg-primary" : "!bg-red-600"
                 } text-white !flex justify-center items-center md:!w-[7rem]`}
@@ -295,9 +295,10 @@ export default function Navbar({ className }) {
                             className="w-full btn">
                             Login
                           </button>
-                          <span className="float-right pb-5 cursor-pointer" id="registration">
+                          <span className="float-right pb-5 cursor-pointer">
                             <a
                               onClick={() => toggleSwitch("Registration")}
+                              id="registration"
                               className="bg-transparent hover:text-red-600 visited:text-[#385285]">
                               สมัครตอนนี้
                             </a>
@@ -369,7 +370,8 @@ export default function Navbar({ className }) {
                           <span className="float-right pb-5 cursor-pointer">
                             <a
                               onClick={() => toggleSwitch("Login")}
-                              className="bg-transparent hover:text-red-600 visited:text-[#385285]" id="go-login">
+                              className="bg-transparent hover:text-red-600 visited:text-[#385285]"
+                              id="go-login">
                               มีบัญชีอยู่แล้ว
                             </a>
                           </span>
