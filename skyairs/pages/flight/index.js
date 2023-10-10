@@ -78,6 +78,11 @@ export default function FlightSearch() {
       if (res.data.msg === "There is no information on the return flight.") {
         alert(res.data.msg);
         setSearchResults([]);
+      } else if (
+        res.data.msg === "There is no information on the departure flight."
+      ) {
+        alert(res.data.msg);
+        setSearchResults([]);
       } else {
         setSearchResults(res.data);
       }
@@ -85,7 +90,9 @@ export default function FlightSearch() {
   };
 
   useEffect(() => {
-    getData();
+    if (router.pathname !== "/flight") {
+      getData();
+    }
   }, []);
 
   const onSubmit = (data) => {
@@ -179,7 +186,7 @@ export default function FlightSearch() {
         <div className="w-full flex gap-x-[10px]">
           {/* //? pull from database */}
           {uniqueFlights.map((value, idx) => (
-            <div key={"uni-${idx}"}>
+            <div key={`uni-${idx}`}>
               <div className="flex flex-col gap-y-[5px] items-start">
                 <p className="text-base font-bold" key={`text-${idx}`}>
                   {type === "return" ? (

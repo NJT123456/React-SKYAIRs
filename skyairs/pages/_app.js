@@ -120,6 +120,7 @@ export default function App({ Component, pageProps }) {
   
 
   // todo:make group search
+  console.log(searchResults);
 
   const flightSearchGroups = new Set();
 
@@ -136,6 +137,8 @@ export default function App({ Component, pageProps }) {
 
     flightSearchGroups.add(key);
   });
+
+  
 
   const uniqueFlights = Array.from(flightSearchGroups).map((key) =>
     JSON.parse(key)
