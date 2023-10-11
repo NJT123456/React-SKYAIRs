@@ -141,6 +141,11 @@ export default function Flight() {
   }
   `;
 
+  const url_roundtrip = `http://localhost:3001/search?depAirport=${codeFrom}&arrAirport=${codeGo}&seatClass=${seatClass}&depDate=${formatDate(
+    depDate,
+    "YYYY-MM-DD"
+  )}&retDate=${formatDate(retDate, "YYYY-MM-DD")}&type=return`;
+
   const onSubmit = () => {
     setSelectFormData([{}]);
     setType("");
@@ -171,7 +176,20 @@ export default function Flight() {
         alert(res.data.msg);
       } else {
         setSearchResults(res.data);
-        router.push({ pathname: "/flight", query: filteredFormData });
+        if (flightTrip === "roundtrip") {
+          axios.get(url_roundtrip).then((res) => {
+            if (
+              res.data.msg === "There is no information on the return flight."
+            ) {
+              alert(res.data.msg);
+              setSearchResults([]);
+            } else {
+              router.push({ pathname: "/flight", query: filteredFormData });
+            }
+          });
+        } else {
+          router.push({ pathname: "/flight", query: filteredFormData });
+        }
       }
     });
 
@@ -235,7 +253,8 @@ export default function Flight() {
                 </div>
                 <button
                   className={`switch-button ${Switch ? "active-switch" : ""}`}
-                  onClick={toggleSwitch} id="switch-button">
+                  onClick={toggleSwitch}
+                  id="switch-button">
                   <div className="icon">
                     <BsRepeat />
                   </div>

@@ -89,11 +89,13 @@ export default function FlightSearch() {
     });
   };
 
+  console.log(router);
+
   useEffect(() => {
-    if (router.pathname !== "/flight") {
+    if (router.asPath.includes('?')) {
       getData();
     }
-  }, []);
+  }, [router]);
 
   const onSubmit = (data) => {
     if (flightTrip === "oneway") {
